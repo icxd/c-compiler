@@ -7,16 +7,11 @@
 #include "include/instruction.h"
 #include "include/constant.h"
 
-#define BUILTIN_FUNC(ident) \
-    vm->globals->symbols[vm->globals->size].name = SV(ident); \
-    vm->globals->symbols[vm->globals->size].index = vm->builtin_func_count++; \
-    vm->globals->size++;
-
 int main(void) {
     struct vm_t* vm = vm_new();
 
-    BUILTIN_FUNC("printf");
-    BUILTIN_FUNC("test");
+    vm_builtin_function(vm, SV("printf"), 1, true, true, NULL);
+    vm_builtin_function(vm, SV("test"), 0, true, false, NULL);
 
     vm_write_string(vm, SV("Hello, world!"));
     vm_write_call(vm, SV("printf"), 1);

@@ -18,7 +18,18 @@ struct vm_t {
     uint stack[256];
     uint stack_size;
     
+    struct function_t* builtins;
     uint builtin_func_count;
+};
+
+struct function_t {
+    string name;
+    uint arity;
+
+    b32 is_builtin;
+    b32 is_variadic;
+
+    void (*func)(void);
 };
 
 struct vm_t* vm_new(void);
@@ -37,5 +48,6 @@ void vm_write_call(struct vm_t* vm, string name, uint arity);
 void vm_write_number(struct vm_t* vm, int value);
 void vm_write_string(struct vm_t* vm, string value);
 void vm_write_symbol(struct vm_t* vm, string name);
+void vm_builtin_function(struct vm_t* vm, string name, uint arity, b32 builtin, b32 variadic, void (*func)(void));
 
 #endif // VM_H

@@ -3,6 +3,7 @@
         "*.ejs": "html",
         "stdio.h": "c",
         "vm.h": "c",
-        "sv.h": "c"
+        "sv.h": "c",
+        "types.h": "c"
     }
 }

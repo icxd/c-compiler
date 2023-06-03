@@ -1,3 +1,4 @@
+#include <stdio.h>
 #include <stdlib.h>
 
 #include "include/vm.h"
@@ -15,6 +16,7 @@ struct vm_t* vm_new(void) {
     vm->globals->size = 0;
     vm->globals->capacity = 256;
     vm->stack_size = 0;
+    vm->builtins = malloc(sizeof(struct function_t) * 256);
     vm->builtin_func_count = 0;
     return vm;
 }
@@ -165,4 +167,16 @@ void vm_write_symbol(struct vm_t* vm, string name) {
         .index = vm->globals->size,
     };
     vm->globals->symbols[vm->globals->size++] = symbol;
+}
+
+void vm_builtin_function(struct vm_t* vm, string name, uint arity, b32 builtin, b32 variadic, void (*func)(void)) {
+    vm->globals->symbols[vm->globals->size].name = name;
+    vm->globals->symbols[vm->globals->size].index = vm->builtin_func_count;
+    vm->builtins[vm->builtin_func_count].name = name;
+    vm->builtins[vm->builtin_func_count].arity = arity;
+    vm->builtins[vm->builtin_func_count].is_builtin = builtin;
+    vm->builtins[vm->builtin_func_count].is_variadic = variadic;
+    vm->builtins[vm->builtin_func_count].func = func;
+    vm->globals->size++;
+    vm->builtin_func_count++;
 }
