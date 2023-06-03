@@ -3,4 +3,4 @@
 build/*.o
 bin/*
 
-.vscode
+.vscode/
