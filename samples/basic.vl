@@ -1,0 +1,38 @@
+// The `using` keyword imports all functions, structures,
+// etc. and allows you to write `println(...)` instead
+// of `fmt.println(...)`, as an example.
+using fmt :: import "std/fmt";
+// The alternative would be:
+//   string :: import "std/string";
+
+// This can also be defined as `int :: i64`
+// but putting the `explicit` keyword infront of
+// the type makes it distinct from other i64 types,
+// meaning that if variable A has type `int`, and
+// variable B has type `i64`, they will not have
+// the same type.
+float :: explicit f32;
+int :: i32;
+
+factorial :: fn(n: i64) -> i64 {
+    // No need for the `()` around the if condition,
+    // same goes for the while and for loops.
+    if n == 0 {
+        // Sadly, semicolons are required. This is
+        // mainly cause I was too lazy to handle
+        // newline tokens everywhere.
+        return 1;
+    } else {
+        return n * factorial(n - 1);
+    }
+}
+
+// // If you want you're function to return void, you
+// // do not need to specify a return type and the function
+// // can be written as:
+// //  main :: fn() { ... }
+main :: fn() -> void {
+    // And this would be:
+    //   fmt.printf("%d\n", factorial(5));
+    printf("%d\n", factorial(5));
+}
