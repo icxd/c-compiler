@@ -3,7 +3,7 @@
 #include "include/vm.h"
 #include "include/sv.h"
 
-struct vm_t* vm_new() {
+struct vm_t* vm_new(void) {
     struct vm_t* vm = malloc(sizeof(struct vm_t));
     vm->chunk = malloc(sizeof(struct chunk_t));
     vm->chunk->instructions = malloc(sizeof(struct instruction_t) * 256);

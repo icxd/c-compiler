@@ -7,7 +7,7 @@
 #include "include/instruction.h"
 #include "include/constant.h"
 
-int main(int argc, char** argv) {
+int main(void) {
     struct vm_t* vm = vm_new();
 
     vm_write_number(vm, 1);

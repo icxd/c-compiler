@@ -16,7 +16,7 @@ struct vm_t {
     uint stack_size;
 };
 
-struct vm_t* vm_new();
+struct vm_t* vm_new(void);
 void vm_free(struct vm_t* vm);
 void vm_write(struct vm_t* vm, struct instruction_t instruction);
 void vm_write_constant(struct vm_t* vm, union constant_value_t value);
