@@ -1,2 +1,6 @@
-build/
-bin/
+# Git Ignore file for C projects
+
+build/*.o
+bin/*
+
+.vscode
