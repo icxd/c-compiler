@@ -1,0 +1,73 @@
+Type_Info_Tag :: enum {
+    INTEGER,
+    FLOAT,
+    STRING,
+    CHAR,
+    BOOL,
+    POINTER,
+    ARRAY,
+    FUNCTION,
+    STRUCT,
+    ENUM,
+    UNION,
+    VOID,
+}
+
+Type_Info :: struct {
+    tag : Type_Info_Tag,
+    type_info : union {
+        Type_Info_Integer as_integer,
+        Type_Info_Float as_float,
+        Type_Info_String as_string,
+        Type_Info_Char as_char,
+        Type_Info_Bool as_bool,
+        Type_Info_Pointer as_pointer,
+        Type_Info_Array as_array,
+        Type_Info_Function as_function,
+        Type_Info_Struct as_struct,
+        Type_Info_Enum as_enum,
+        Type_Info_Union as_union,
+        Type_Info_Void as_void,
+    }
+}
+
+Type_Info_Integer :: struct { type_info : Type_Info, size : u64, is_signed : bool }
+Type_Info_Float :: struct { type_info : Type_Info, size : u64 }
+Type_Info_String :: struct { type_info : Type_Info, size : u64 }
+Type_Info_Char :: struct { type_info : Type_Info, size : u64 }
+Type_Info_Bool :: struct { type_info : Type_Info, size : u64 }
+Type_Info_Pointer :: struct { type_info : Type_Info, size : u64, to : Type_Info* }
+Type_Info_Array :: struct { type_info : Type_Info, size : u64, of : Type_Info* }
+Type_Info_Function :: struct { type_info : Type_Info, size : u64, return_type : Type_Info*, parameter_count : u64, parameters : Type_Info* }
+Type_Info_Struct :: struct { type_info : Type_Info, size : u64, member_count : u64, members : Type_Info* }
+Type_Info_Enum :: struct { type_info : Type_Info, size : u64, member_count : u64, members : Type_Info* }
+Type_Info_Union :: struct { type_info : Type_Info, size : u64, member_count : u64, members : Type_Info* }
+Type_Info_Void :: struct { type_info : Type_Info, size : u64 }
+
+Any :: struct { type_info : Type_Info, data : void* }
+
+type_of :: fn(t: Any) -> Type_Info { return t.type_info; }
+type_info_of :: fn(t: Any) -> Type_Info_Tag { return t.type_info.tag; }
+
+is_integer :: fn(t: Type_Info) -> bool { return t.tag == Type_Info_Tag.INTEGER; }
+is_signed_integer :: fn(t: Type_Info) -> bool { return t.tag == Type_Info_Tag.INTEGER ? t.type_info.as_integer.is_signed : false; }
+is_unsigned_integer :: fn(t: Type_Info) -> bool { return t.tag == Type_Info_Tag.INTEGER ? !t.type_info.as_integer.is_signed : false; }
+is_float :: fn(t: Type_Info) -> bool { return t.tag == Type_Info_Tag.FLOAT; }
+is_string :: fn(t: Type_Info) -> bool { return t.tag == Type_Info_Tag.STRING; }
+is_char :: fn(t: Type_Info) -> bool { return t.tag == Type_Info_Tag.CHAR; }
+is_bool :: fn(t: Type_Info) -> bool { return t.tag == Type_Info_Tag.BOOL; }
+is_pointer :: fn(t: Type_Info) -> bool { return t.tag == Type_Info_Tag.POINTER; }
+is_array :: fn(t: Type_Info) -> bool { return t.tag == Type_Info_Tag.ARRAY; }
+is_function :: fn(t: Type_Info) -> bool { return t.tag == Type_Info_Tag.FUNCTION; }
+is_struct :: fn(t: Type_Info) -> bool { return t.tag == Type_Info_Tag.STRUCT; }
+is_enum :: fn(t: Type_Info) -> bool { return t.tag == Type_Info_Tag.ENUM; }
+is_union :: fn(t: Type_Info) -> bool { return t.tag == Type_Info_Tag.UNION; }
+is_void :: fn(t: Type_Info) -> bool { return t.tag == Type_Info_Tag.VOID; }
+
+main :: fn() -> i32 {
+    x : i32;
+
+    printf("typeof(x) = %s\n", type_info_of(x));
+
+    return 0;
+}
