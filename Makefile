@@ -1,7 +1,7 @@
 SRCS := $(wildcard src/*.c)
 OBJS := $(patsubst src/%.c, build/%.o, $(SRCS))
 CC := clang
-CFLAGS := -Wall -Wextra -Werror -Wpedantic -g
+CFLAGS := -Wall -Wextra -Werror -Wpedantic -g -Wmissing-prototypes
 
 TARGET := bin/main
 
