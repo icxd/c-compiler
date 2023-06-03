@@ -15,6 +15,7 @@ struct vm_t* vm_new(void) {
     vm->globals->size = 0;
     vm->globals->capacity = 256;
     vm->stack_size = 0;
+    vm->builtin_func_count = 0;
     return vm;
 }
 
@@ -121,6 +122,24 @@ void vm_write_return(struct vm_t* vm) {
     vm_write(vm, instruction);
 }
 
+void vm_write_call(struct vm_t* vm, string name, uint arity) {
+    struct instruction_t instruction = {
+        .op = OP_CALL,
+    };
+
+    u32 index = 0;
+    for (uint idx = 0; idx < vm->globals->size; idx++) {
+        if (vm->globals->symbols[idx].name.size == name.size && strncmp(vm->globals->symbols[idx].name.chars, name.chars, name.size) == 0) {
+            index = vm->globals->symbols[idx].index;
+            break;
+        }
+    }
+
+    instruction.call.name_index = index;
+    instruction.call.arity = arity;
+    vm_write(vm, instruction);
+}
+
 void vm_write_number(struct vm_t* vm, int value) {
     union constant_value_t constant = {
         .number.val = value,
@@ -129,10 +148,15 @@ void vm_write_number(struct vm_t* vm, int value) {
 }
 
 void vm_write_string(struct vm_t* vm, string value) {
-    union constant_value_t constant = {
+    struct instruction_t instruction = {
+        .op = OP_CONSTANT,
+        .value_type = CONSTANT_VALUE_TYPE_STRING,
+        .value = malloc(sizeof(union constant_value_t))
+    };
+    *instruction.value = (union constant_value_t) {
         .string.val = value,
     };
-    vm_write_constant(vm, constant);
+    vm_write(vm, instruction);
 }
 
 void vm_write_symbol(struct vm_t* vm, string name) {

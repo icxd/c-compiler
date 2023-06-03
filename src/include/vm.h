@@ -10,10 +10,15 @@
 
 struct vm_t {
     struct chunk_t* chunk;
+    
     uint ip;
+    
     struct symbol_table_t* globals;
+    
     uint stack[256];
     uint stack_size;
+    
+    uint builtin_func_count;
 };
 
 struct vm_t* vm_new(void);
@@ -28,6 +33,7 @@ void vm_write_multiply(struct vm_t* vm);
 void vm_write_divide(struct vm_t* vm);
 void vm_write_negate(struct vm_t* vm);
 void vm_write_return(struct vm_t* vm);
+void vm_write_call(struct vm_t* vm, string name, uint arity);
 void vm_write_number(struct vm_t* vm, int value);
 void vm_write_string(struct vm_t* vm, string value);
 void vm_write_symbol(struct vm_t* vm, string name);

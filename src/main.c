@@ -7,20 +7,27 @@
 #include "include/instruction.h"
 #include "include/constant.h"
 
+#define BUILTIN_FUNC(ident) \
+    vm->globals->symbols[vm->globals->size].name = SV(ident); \
+    vm->globals->symbols[vm->globals->size].index = vm->builtin_func_count++; \
+    vm->globals->size++;
+
 int main(void) {
     struct vm_t* vm = vm_new();
 
+    BUILTIN_FUNC("printf");
+    BUILTIN_FUNC("test");
+
+    vm_write_string(vm, SV("Hello, world!"));
+    vm_write_call(vm, SV("printf"), 1);
+    
+    vm_write_string(vm, SV("%d"));
     vm_write_number(vm, 1);
     vm_write_number(vm, 2);
     vm_write_add(vm);
-    vm_write_number(vm, 3);
-    vm_write_multiply(vm);
-    vm_write_store_global(vm, SV("a"));
-    vm_write_load_global(vm, SV("a"));
-    vm_write_number(vm, 1);
-    vm_write_add(vm);
-    vm_write_store_global(vm, SV("b"));
-    vm_write_load_global(vm, SV("b"));
+    vm_write_call(vm, SV("printf"), 2);
+
+    vm_write_call(vm, SV("test"), 0);
 
     printf("size: %d\n", vm->chunk->size);
     for (uint i = 0; i < vm->chunk->size; i++) {
@@ -33,7 +40,7 @@ int main(void) {
                 } else if (instruction.value_type == CONSTANT_VALUE_TYPE_NUMBER) {
                     printf("%d\n", instruction.value->number.val);
                 } else {
-                    printf(SV_ARG"\n", SV_FMT(instruction.value->string.val));
+                    printf("\""SV_ARG"\"\n", SV_FMT(instruction.value->string.val));
                 }
                 break;
             }
@@ -67,6 +74,13 @@ int main(void) {
             }
             case OP_RETURN: {
                 printf("%d: OP_RETURN\n", i);
+                break;
+            }
+            case OP_CALL: {
+                printf("%d: OP_CALL %d ("SV_ARG") (%d)\n", i,
+                    instruction.call.name_index, 
+                    SV_FMT(vm->globals->symbols[instruction.call.name_index].name),
+                    instruction.call.arity);
                 break;
             }
         }
