@@ -76,6 +76,14 @@ void vm_write_load_global(struct vm_t* vm, string name) {
     vm_write(vm, instruction);
 }
 
+void vm_write_pop(struct vm_t* vm) {
+    struct instruction_t instruction = {
+        .op = OP_POP,
+        .value_type = CONSTANT_VALUE_TYPE_NONE,
+    };
+    vm_write(vm, instruction);
+}
+
 void vm_write_add(struct vm_t* vm) {
     struct instruction_t instruction = {
         .op = OP_ADD,

@@ -47,6 +47,10 @@ int main(void) {
                 printf("%d: OP_STORE_GLOBAL %d ("SV_ARG")\n", i, instruction.value->idx.index, SV_FMT(vm->globals->symbols[instruction.value->idx.index].name));
                 break;
             }
+            case OP_POP: {
+                printf("%d: OP_POP\n", i);
+                break;
+            }
             case OP_ADD: {
                 printf("%d: OP_ADD\n", i);
                 break;

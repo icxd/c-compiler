@@ -8,6 +8,7 @@ enum op_t {
     OP_STORE_GLOBAL,
     OP_LOAD_GLOBAL,
     OP_CONSTANT,
+    OP_POP,
     OP_ADD,
     OP_SUBTRACT,
     OP_MULTIPLY,

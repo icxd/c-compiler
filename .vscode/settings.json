@@ -4,6 +4,7 @@
         "stdio.h": "c",
         "vm.h": "c",
         "sv.h": "c",
-        "types.h": "c"
+        "types.h": "c",
+        "constant.h": "c"
     }
 }
