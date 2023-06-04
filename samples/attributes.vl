@@ -1,0 +1,19 @@
+// In this case, the name for the foreign function can be omitted
+// since the name of the function is the same as the name of the
+// foreign function. But I chose to include it for clarity.
+printf :: fn(fmt: *u8, args: ...any) -> i32 #foreign "printf";
+
+// The inline function is a function that is expanded at compile time.
+// This means that the function is not called at runtime, but instead
+// the function body is inserted at the call site. This is useful for
+// small functions that are called many times, such as getters and setters.
+inline_function :: fn() #inline {
+    printf("Hello, world!\n");
+}
+
+// The entry point is the same as the main function in C.
+// If no function is marked as the entry point, the compiler
+// will assume that the entry point is called "main".
+main :: fn() -> i32 #entry_point {
+    return 0;
+}
