@@ -6,8 +6,30 @@
 #include "include/vm.h"
 #include "include/instruction.h"
 #include "include/constant.h"
+#include "include/tokenizer.h"
+
+static void print_token(struct token_t token) {
+    printf("type: %d, value: \""SV_ARG"\", line: %d, column: %d\n", token.type, SV_FMT(token.value), token.line, token.column);
+}
 
 int main(void) {
+    string contents = SV(
+        "ab :: 123;\n"
+        "cd :: 456;\n"
+        "ef := ab + cd;\n"
+    );
+
+    struct tokenizer_t* tokenizer = tokenizer_new(contents);
+    struct token_t token = tokenizer_next(tokenizer);
+    while (token.type != TOKEN_TYPE_EOF) {
+        print_token(token);
+        token = tokenizer_next(tokenizer);
+    }
+
+    tokenizer_free(tokenizer);
+
+    ///////////
+
     struct vm_t* vm = vm_new();
 
     vm_builtin_function(vm, SV("printf"), 1, true, true, NULL);
