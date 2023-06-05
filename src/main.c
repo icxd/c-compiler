@@ -14,17 +14,40 @@ static void print_token(struct token_t token) {
 
 int main(void) {
     string contents = SV(
-        "ab :: 123;\n"
-        "cd :: 456;\n"
-        "ef := ab + cd;\n"
+        "// In this case, the name for the foreign function can be omitted\n"
+        "// since the name of the function is the same as the name of the\n"
+        "// foreign function. But I chose to include it for clarity.\n"
+        "printf :: fn(fmt: *u8, args: ...any) -> i32 #foreign \"printf\";\n"
+        "\n"
+        "// The inline function is a function that is expanded at compile time.\n"
+        "// This means that the function is not called at runtime, but instead\n"
+        "// the function body is inserted at the call site. This is useful for\n"
+        "// small functions that are called many times, such as getters and setters.\n"
+        "inline_function :: fn() #inline {\n"
+            "printf(\"Hello, world!\n\");\n"
+        "}\n"
+        "\n"
+        "// The entry point is the same as the main function in C.\n"
+        "// If no function is marked as the entry point, the compiler\n"
+        "// will assume that the entry point is called \"main\".\n"
+        "main :: fn() -> i32 #entry_point {\n"
+            "return 0;\n"
+        "}\n"
     );
 
     struct tokenizer_t* tokenizer = tokenizer_new(contents);
     struct token_t token = tokenizer_next(tokenizer);
-    while (token.type != TOKEN_TYPE_EOF) {
+    do {
+        if (token.type == TK_UNKNOWN) {
+            fprintf(stderr, "Unknown token: \""SV_ARG"\" at line %d, column %d\n", SV_FMT(token.value), token.line, token.column);
+            break;
+        } else if (token.type == TK_ERROR) {
+            fprintf(stderr, "Error: \""SV_ARG"\" at line %d, column %d\n", SV_FMT(token.value), token.line, token.column);
+            break;
+        }
         print_token(token);
         token = tokenizer_next(tokenizer);
-    }
+    } while (token.type != TK_EOF);
 
     tokenizer_free(tokenizer);
 

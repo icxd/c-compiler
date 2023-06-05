@@ -1,20 +1,47 @@
-#ifndef TOKENIZER
-#define TOKENIZER
+#ifndef TOKENIZER_H
+#define TOKENIZER_H
 
 #include "sv.h"
 #include "types.h"
 
 enum token_type_t {
-    TOKEN_TYPE_EOF,
-    TOKEN_TYPE_IDENTIFIER,
-    TOKEN_TYPE_NUMBER,
-    TOKEN_TYPE_COLON,
-    TOKEN_TYPE_ASSIGN,
-    TOKEN_TYPE_ADD,
-    TOKEN_TYPE_SEMICOLON,
-    TOKEN_TYPE_COMMENT,
-    TOKEN_TYPE_UNKNOWN,
-    TOKEN_TYPE_ERROR
+    TK_EOF,
+
+    TK_IDENTIFIER,
+    TK_STRING,
+    TK_INTEGER,
+    TK_FLOAT,
+    TK_HEXADECIMAL,
+    TK_BINARY,
+
+    TK_OPEN_PAREN,
+    TK_CLOSE_PAREN,
+    TK_OPEN_BRACE,
+    TK_CLOSE_BRACE,
+    TK_OPEN_BRACKET,
+    TK_CLOSE_BRACKET,
+    TK_PERIOD,
+    TK_COMMA,
+    TK_COLON,
+    TK_SEMICOLON,
+    TK_ARROW,
+    TK_HASH,
+
+    TK_ASSIGN,
+    TK_PLUS_ASSIGN,
+    TK_PLUS,
+    TK_MINUS_ASSIGN,
+    TK_MINUS,
+    TK_ASTERISK_ASSIGN,
+    TK_ASTERISK,
+    TK_SLASH_ASSIGN,
+    TK_SLASH,
+    TK_PERCENT_ASSIGN,
+    TK_PERCENT,
+
+    TK_COMMENT,
+    TK_UNKNOWN,
+    TK_ERROR
 };
 
 struct tokenizer_t {
@@ -34,5 +61,6 @@ struct token_t {
 struct tokenizer_t* tokenizer_new(string contents);
 void tokenizer_free(struct tokenizer_t* tokenizer);
 struct token_t tokenizer_next(struct tokenizer_t* tokenizer);
+char tokenizer_peek(struct tokenizer_t* tokenizer, uint offset);
 
-#endif // TOKENIZER
+#endif // TOKENIZER_H
