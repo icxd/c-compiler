@@ -15,5 +15,7 @@ struct string_view_t {
 int sv_compare(struct string_view_t a, struct string_view_t b);
 struct string_view_t sv_substr(struct string_view_t sv, unsigned int start, unsigned int end);
 char sv_at(struct string_view_t sv, unsigned int index);
+struct string_view_t sv_trim(struct string_view_t sv);
+struct string_view_t sv_append(struct string_view_t a, struct string_view_t b);
 
 #endif // SV_H

@@ -1,3 +1,6 @@
+#include <string.h>
+#include <stdlib.h>
+
 #include "include/sv.h"
 
 int sv_compare(struct string_view_t a, struct string_view_t b) {
@@ -20,4 +23,22 @@ struct string_view_t sv_substr(struct string_view_t sv, unsigned int start, unsi
 char sv_at(struct string_view_t sv, unsigned int index) {
     if (index > sv.size) return '\0';
     return sv.chars[index];
+}
+
+struct string_view_t sv_trim(struct string_view_t sv) {
+    unsigned int start = 0;
+    unsigned int end = sv.size - 1;
+
+    while (sv.chars[start] == ' ' || sv.chars[start] == '\t') start++;
+    while (sv.chars[end] == ' ' || sv.chars[end] == '\t') end--;
+
+    return sv_substr(sv, start, end + 1);
+}
+
+struct string_view_t sv_append(struct string_view_t a, struct string_view_t b) {
+    char* new_chars = malloc(a.size + b.size + 1);
+    memcpy(new_chars, a.chars, a.size);
+    memcpy(new_chars + a.size, b.chars, b.size);
+    new_chars[a.size + b.size] = '\0';
+    return (struct string_view_t){ .chars = new_chars, .size = a.size + b.size };
 }
