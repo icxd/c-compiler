@@ -7,33 +7,24 @@
 #include "include/instruction.h"
 #include "include/constant.h"
 #include "include/tokenizer.h"
+#include "include/file.h"
 
 static void print_token(struct token_t token) {
     printf("type: %d, value: \""SV_ARG"\", line: %d, column: %d\n", token.type, SV_FMT(token.value), token.line, token.column);
 }
 
-int main(void) {
-    string contents = SV(
-        "// In this case, the name for the foreign function can be omitted\n"
-        "// since the name of the function is the same as the name of the\n"
-        "// foreign function. But I chose to include it for clarity.\n"
-        "printf :: fn(fmt: *u8, args: ...any) -> i32 #foreign \"printf\";\n"
-        "\n"
-        "// The inline function is a function that is expanded at compile time.\n"
-        "// This means that the function is not called at runtime, but instead\n"
-        "// the function body is inserted at the call site. This is useful for\n"
-        "// small functions that are called many times, such as getters and setters.\n"
-        "inline_function :: fn() #inline {\n"
-            "printf(\"Hello, world!\n\");\n"
-        "}\n"
-        "\n"
-        "// The entry point is the same as the main function in C.\n"
-        "// If no function is marked as the entry point, the compiler\n"
-        "// will assume that the entry point is called \"main\".\n"
-        "main :: fn() -> i32 #entry_point {\n"
-            "return 0;\n"
-        "}\n"
-    );
+int main(int argc, char** argv) {
+    if (argc < 2) {
+        fprintf(stderr, "Usage: main <filename> [options]\n");
+        return 1;
+    }
+
+    string filename = SV(argv[1]);
+    printf(SV_ARG"\n", SV_FMT(filename));
+
+    struct file_t* file = file_new(filename);
+    string contents = file->contents;
+    printf(SV_ARG"\n", SV_FMT(contents));
 
     struct tokenizer_t* tokenizer = tokenizer_new(contents);
     struct token_t token = tokenizer_next(tokenizer);
@@ -131,6 +122,7 @@ int main(void) {
     }
 
     vm_free(vm);
+    file_free(file);
 
     return 0;
 }

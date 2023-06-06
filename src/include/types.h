@@ -38,8 +38,6 @@ typedef unsigned char b8;
 typedef unsigned short b16;
 typedef unsigned int b32;
 typedef unsigned long long b64;
-#define true 1
-#define false 0
 
 #define null ((void*)0)
 

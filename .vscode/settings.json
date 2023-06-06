@@ -5,6 +5,7 @@
         "vm.h": "c",
         "sv.h": "c",
         "types.h": "c",
-        "constant.h": "c"
+        "constant.h": "c",
+        "errno.h": "c"
     }
 }
