@@ -58,11 +58,11 @@ void ast_print(struct ast_t* ast, u32 indent) {
                     break;
                 }
                 case BASE_HEXADECIMAL: {
-                    printf("0x%llx\n", ast->data.integer.value);
+                    printf("0x%llx (%lld)\n", ast->data.integer.value, ast->data.integer.value);
                     break;
                 }
                 case BASE_BINARY: {
-                    printf("0b%s\n", bianry_repr(ast->data.integer.value));
+                    printf("0b%s (%lld)\n", bianry_repr(ast->data.integer.value), ast->data.integer.value);
                     break;
                 }
                 default: {
