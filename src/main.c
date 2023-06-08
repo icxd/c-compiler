@@ -29,22 +29,9 @@ int main(int argc, char** argv) {
     printf(SV_ARG"\n", SV_FMT(contents));
 
     struct tokenizer_t* tokenizer = tokenizer_new(contents);
-    // struct token_t token = tokenizer_next(tokenizer);
-    // do {
-    //     if (token.type == TK_UNKNOWN) {
-    //         fprintf(stderr, "Unknown token: \""SV_ARG"\" at line %d, column %d\n", SV_FMT(token.value), token.line, token.column);
-    //         break;
-    //     } else if (token.type == TK_ERROR) {
-    //         fprintf(stderr, "Error: \""SV_ARG"\" at line %d, column %d\n", SV_FMT(token.value), token.line, token.column);
-    //         break;
-    //     }
-    //     print_token(token);
-    //     token = tokenizer_next(tokenizer);
-    // } while (token.type != TK_EOF);
-
     struct parser_t* parser = parser_new(tokenizer);
-
     struct ast_t* ast = parser_parse(parser);
+
     ast_print(ast, 0);
 
     parser_free(parser);
