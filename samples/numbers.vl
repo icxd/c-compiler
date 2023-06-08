@@ -4,4 +4,5 @@ hi
 12.34
 0x1234
 0b1010
-#attribute
+// #attribute "whatever"
+#foreign "printf"
