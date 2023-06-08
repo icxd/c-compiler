@@ -36,7 +36,7 @@ void ast_print(struct ast_t* ast, u32 indent) {
             break;
         }
         case AST_INTEGER: {
-            printf("AST_INTEGER: %lld\n", ast->data.integer.value);
+            printf("AST_INTEGER: %lld (base: %d)\n", ast->data.integer.value, ast->data.integer.base);
             break;
         }
         case AST_FLOAT: {

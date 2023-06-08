@@ -21,6 +21,12 @@ enum ast_type_t {
     AST_VARIABLE,
 };
 
+enum integer_base_t {
+    BASE_DECIMAL = 10,
+    BASE_HEXADECIMAL = 16,
+    BASE_BINARY = 2,
+};
+
 struct ast_t;
 
 union ast_data_t {
@@ -34,7 +40,10 @@ union ast_data_t {
 
     struct { struct ast_t* statements; } program;
     struct { string value; } string_;
-    struct { i64 value; } integer;
+    struct {
+        i64 value;
+        enum integer_base_t base;
+    } integer;
     struct { f64 value; } float_;
     struct {
         struct token_t op;
