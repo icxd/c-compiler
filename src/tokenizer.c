@@ -93,6 +93,11 @@ struct token_t tokenizer_next(struct tokenizer_t* tokenizer) {
         tokenizer->index++;
         return tokenizer_next(tokenizer);
     }
+    if (c == '\r') {
+        tokenizer->column++;
+        tokenizer->index++;
+        return tokenizer_next(tokenizer);
+    }
     if (c == '"') {
         tokenizer->column++;
         tokenizer->index++;
