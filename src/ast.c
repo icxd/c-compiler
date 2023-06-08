@@ -1,6 +1,21 @@
 #include <stdio.h>
+#include <stdlib.h>
 #include "include/ast.h"
 #include "include/types.h"
+
+static char* bianry_repr(int n) {
+    int len = sizeof(int) * 8;
+    char* binary = (char*)malloc(sizeof(char) * len);
+    int k = 0;
+    for (unsigned i = (1 << (len - 1)); i > 0; i = i / 2)
+        binary[k++] = (n & i) ? '1' : '0';
+    binary[k] = '\0';
+    int i = 0, j = 0;
+    while (binary[i] == '0') i++;
+    while (binary[i]) binary[j++] = binary[i++];
+    binary[j] = '\0';
+    return binary;
+}
 
 void ast_print(struct ast_t* ast, u32 indent) {
     if (ast == NULL) {
@@ -36,7 +51,25 @@ void ast_print(struct ast_t* ast, u32 indent) {
             break;
         }
         case AST_INTEGER: {
-            printf("AST_INTEGER: %lld (base: %d)\n", ast->data.integer.value, ast->data.integer.base);
+            printf("AST_INTEGER: ");
+            switch (ast->data.integer.base) {
+                case BASE_DECIMAL: {
+                    printf("%lld\n", ast->data.integer.value);
+                    break;
+                }
+                case BASE_HEXADECIMAL: {
+                    printf("0x%llx\n", ast->data.integer.value);
+                    break;
+                }
+                case BASE_BINARY: {
+                    printf("0b%s\n", bianry_repr(ast->data.integer.value));
+                    break;
+                }
+                default: {
+                    printf("Unknown integer base: %d\n", ast->data.integer.base);
+                    break;
+                }
+            }
             break;
         }
         case AST_FLOAT: {
