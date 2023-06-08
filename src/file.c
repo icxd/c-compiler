@@ -21,7 +21,7 @@ string read_file_to_string(string path) {
     FILE* filepoint;
     errno_t err;
 
-    if ((err = fopen_s(&filepoint, path.chars, "r")) != 0) {
+    if ((err = fopen_s(&filepoint, path.chars, "rb")) != 0) {
         fprintf(stderr, "Failed to open file '"SV_ARG"' for reading.\n", SV_FMT(path));
         exit(1);
     } else {
