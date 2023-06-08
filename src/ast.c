@@ -17,6 +17,20 @@ void ast_print(struct ast_t* ast, u32 indent) {
             ast_print(ast->data.program.statements, indent + 1);
             break;
         }
+
+        case AST_TOP_LEVEL_ATTRIBUTE: {
+            printf("AST_TOP_LEVEL_ATTRIBUTE: \""SV_ARG"\"\n", SV_FMT(ast->data.top_level_attribute.name));
+            if (ast->data.top_level_attribute.value != NULL) {
+                ast_print(ast->data.top_level_attribute.value, indent + 1);
+            }
+            break;
+        }
+        case AST_EXPRESSION_STATEMENT: {
+            printf("AST_EXPRESSION_STATEMENT\n");
+            ast_print(ast->data.expression_statement.expression, indent + 1);
+            break;
+        }
+
         case AST_STRING: {
             printf("AST_STRING: \""SV_ARG"\"\n", SV_FMT(ast->data.string_.value));
             break;
@@ -42,13 +56,6 @@ void ast_print(struct ast_t* ast, u32 indent) {
         }
         case AST_VARIABLE: {
             printf("AST_VARIABLE: \""SV_ARG"\"\n", SV_FMT(ast->data.variable.identifier));
-            break;
-        }
-        case AST_TOP_LEVEL_ATTRIBUTE: {
-            printf("AST_TOP_LEVEL_ATTRIBUTE: \""SV_ARG"\"\n", SV_FMT(ast->data.top_level_attribute.name));
-            if (ast->data.top_level_attribute.value != NULL) {
-                ast_print(ast->data.top_level_attribute.value, indent + 1);
-            }
             break;
         }
         default: {
