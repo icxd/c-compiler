@@ -9,7 +9,7 @@
 
 struct parser_t* parser_new(struct tokenizer_t* t) {
     struct parser_t* p = malloc(sizeof(struct parser_t));
-    p->t = t;
+    p->tokenizer = t;
     p->ast = NULL;
     p->token = tokenizer_next(t);
     return p;
@@ -37,7 +37,7 @@ struct ast_t* parser_parse(struct parser_t* p) {
         }
 
         if (p->token.type == TK_COMMENT) {
-            p->token = tokenizer_next(p->t);
+            p->token = tokenizer_next(p->tokenizer);
             continue;
         }
 
@@ -49,7 +49,6 @@ struct ast_t* parser_parse(struct parser_t* p) {
 
         current->next = statement;
         current = current->next;
-        // token = tokenizer_next(p->t);
     }
 
     return ast;
@@ -61,19 +60,19 @@ struct ast_t* parser_parse_statement(struct parser_t* p) {
 
     if (p->token.type == TK_HASH) {
         statement->type = AST_TOP_LEVEL_ATTRIBUTE;
-        p->token = tokenizer_next(p->t);
+        p->token = tokenizer_next(p->tokenizer);
         string identifier = p->token.value;
         if (sv_compare(identifier, SV("foreign")) == 0) {
             statement->data.top_level_attribute.name = identifier;
             statement->data.top_level_attribute.value = NULL;
-            p->token = tokenizer_next(p->t);
+            p->token = tokenizer_next(p->tokenizer);
 
             if (p->token.type == TK_STRING) {
                 statement->data.top_level_attribute.value = malloc(sizeof(struct ast_t));
                 statement->data.top_level_attribute.value->type = AST_STRING;
                 statement->data.top_level_attribute.value->data.string_.value = p->token.value;
                 statement->data.top_level_attribute.value->next = NULL;
-                p->token = tokenizer_next(p->t);
+                p->token = tokenizer_next(p->tokenizer);
             } else {
                 fprintf(stderr, "Error: Expected string literal at line %d, column %d\n", p->token.line, p->token.column);
                 return NULL;
@@ -86,14 +85,13 @@ struct ast_t* parser_parse_statement(struct parser_t* p) {
         // parse expression statement
         statement->type = AST_EXPRESSION_STATEMENT;
         statement->data.expression_statement.expression = parser_parse_expression(p);
-        p->token = tokenizer_next(p->t);
 
         if (p->token.type != TK_SEMICOLON) {
             fprintf(stderr, "Error: Expected semicolon at line %d, column %d\n", p->token.line, p->token.column);
             return NULL;
         }
 
-        p->token = tokenizer_next(p->t);
+        p->token = tokenizer_next(p->tokenizer);
     }
     
     return statement;
@@ -104,26 +102,7 @@ struct ast_t* parser_parse_expression(struct parser_t* p) {
 }
 
 struct ast_t* parser_parse_binary(struct parser_t* p) {
-    struct ast_t* expression = parser_parse_unary(p);
-    p->token = tokenizer_next(p->t);
-
-    while (p->token.type == TK_PLUS || 
-           p->token.type == TK_MINUS ||
-           p->token.type == TK_ASTERISK ||
-           p->token.type == TK_SLASH ||
-           p->token.type == TK_PERCENT) {
-        struct ast_t* new_expression = malloc(sizeof(struct ast_t));
-        new_expression->type = AST_BINARY;
-        new_expression->data.binary_op.op = p->token;
-        new_expression->data.binary_op.left = expression;
-        new_expression->data.binary_op.right = parser_parse_unary(p);
-        new_expression->next = NULL;
-
-        expression = new_expression;
-        p->token = tokenizer_next(p->t);
-    }
-
-    return expression;
+    return parser_parse_unary(p);
 }
 
 struct ast_t* parser_parse_unary(struct parser_t* p) {
@@ -131,34 +110,37 @@ struct ast_t* parser_parse_unary(struct parser_t* p) {
 }
 
 struct ast_t* parser_parse_primary(struct parser_t* p) {
-    (void)p; // unused
     struct ast_t* expression = malloc(sizeof(struct ast_t));
     expression->next = NULL;
 
-    if (p->token.type == TK_STRING) {
+    struct token_t token = p->token;
+    p->token = tokenizer_next(p->tokenizer);
+
+    if (token.type == TK_STRING) {
         expression->type = AST_STRING;
-        expression->data.string_.value = p->token.value;
-    } else if (p->token.type == TK_INTEGER) {
+        expression->data.string_.value = token.value;
+    } else if (token.type == TK_INTEGER) {
         expression->type = AST_INTEGER;
-        expression->data.integer.value = atoi(p->token.value.chars);
-    } else if (p->token.type == TK_FLOAT) {
+        expression->data.integer.value = atoi(token.value.chars);
+        expression->data.integer.base = BASE_DECIMAL;
+    } else if (token.type == TK_FLOAT) {
         expression->type = AST_FLOAT;
-        expression->data.float_.value = atof(p->token.value.chars);
-    } else if (p->token.type == TK_IDENTIFIER) {
+        expression->data.float_.value = atof(token.value.chars);
+    } else if (token.type == TK_IDENTIFIER) {
         expression->type = AST_VARIABLE;
-        expression->data.variable.identifier = p->token.value;
-    } else if (p->token.type == TK_HEXADECIMAL) {
+        expression->data.variable.identifier = token.value;
+    } else if (token.type == TK_HEXADECIMAL) {
         expression->type = AST_INTEGER;
-        expression->data.integer.value = strtol(p->token.value.chars, NULL, 16);
-    } else if (p->token.type == TK_BINARY) {
+        expression->data.integer.value = strtol(token.value.chars, NULL, 16);
+        expression->data.integer.base = BASE_HEXADECIMAL;
+    } else if (token.type == TK_BINARY) {
         expression->type = AST_INTEGER;
-        expression->data.integer.value = strtol(p->token.value.chars, NULL, 2);
+        expression->data.integer.value = strtol(token.value.chars, NULL, 2);
+        expression->data.integer.base = BASE_BINARY;
     } else {
-        fprintf(stderr, "Unexpected token: \""SV_ARG"\" (%d) at line %d, column %d\n", SV_FMT(p->token.value), p->token.type, p->token.line, p->token.column);
+        fprintf(stderr, "Unexpected token: \""SV_ARG"\" (%d) at line %d, column %d\n", SV_FMT(token.value), token.type, token.line, token.column);
         return NULL;
     }
-
-    p->token = tokenizer_next(p->t);
     
     return expression;
 }

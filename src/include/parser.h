@@ -5,7 +5,7 @@
 #include "ast.h"
 
 struct parser_t {
-    struct tokenizer_t* t;
+    struct tokenizer_t* tokenizer;
     struct ast_t* ast;
     
     struct token_t token;
