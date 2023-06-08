@@ -9,7 +9,7 @@ enum ast_type_t {
     AST_PROGRAM = 0,
 
     // Statements
-    // TODO: add statements
+    AST_TOP_LEVEL_ATTRIBUTE,
 
     // Expressions
     AST_STRING,
@@ -23,6 +23,11 @@ enum ast_type_t {
 struct ast_t;
 
 union ast_data_t {
+    struct {
+        string name;
+        struct ast_t* value;
+    } top_level_attribute;
+
     struct { struct ast_t* statements; } program;
     struct { string value; } string_;
     struct { i64 value; } integer;
