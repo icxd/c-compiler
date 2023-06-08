@@ -8,10 +8,12 @@
 #include "include/constant.h"
 #include "include/tokenizer.h"
 #include "include/file.h"
+#include "include/ast.h"
+#include "include/parser.h"
 
-static void print_token(struct token_t token) {
-    printf("type: %d, value: \""SV_ARG"\", line: %d, column: %d\n", token.type, SV_FMT(token.value), token.line, token.column);
-}
+// static void print_token(struct token_t token) {
+//     printf("type: %d, value: \""SV_ARG"\", line: %d, column: %d\n", token.type, SV_FMT(token.value), token.line, token.column);
+// }
 
 int main(int argc, char** argv) {
     if (argc < 2) {
@@ -27,19 +29,25 @@ int main(int argc, char** argv) {
     printf(SV_ARG"\n", SV_FMT(contents));
 
     struct tokenizer_t* tokenizer = tokenizer_new(contents);
-    struct token_t token = tokenizer_next(tokenizer);
-    do {
-        if (token.type == TK_UNKNOWN) {
-            fprintf(stderr, "Unknown token: \""SV_ARG"\" at line %d, column %d\n", SV_FMT(token.value), token.line, token.column);
-            break;
-        } else if (token.type == TK_ERROR) {
-            fprintf(stderr, "Error: \""SV_ARG"\" at line %d, column %d\n", SV_FMT(token.value), token.line, token.column);
-            break;
-        }
-        print_token(token);
-        token = tokenizer_next(tokenizer);
-    } while (token.type != TK_EOF);
+    // struct token_t token = tokenizer_next(tokenizer);
+    // do {
+    //     if (token.type == TK_UNKNOWN) {
+    //         fprintf(stderr, "Unknown token: \""SV_ARG"\" at line %d, column %d\n", SV_FMT(token.value), token.line, token.column);
+    //         break;
+    //     } else if (token.type == TK_ERROR) {
+    //         fprintf(stderr, "Error: \""SV_ARG"\" at line %d, column %d\n", SV_FMT(token.value), token.line, token.column);
+    //         break;
+    //     }
+    //     print_token(token);
+    //     token = tokenizer_next(tokenizer);
+    // } while (token.type != TK_EOF);
 
+    struct parser_t* parser = parser_new(tokenizer);
+
+    struct ast_t* ast = parser_parse(parser);
+    ast_print(ast, 0);
+
+    parser_free(parser);
     tokenizer_free(tokenizer);
 
     ///////////
@@ -52,10 +60,10 @@ int main(int argc, char** argv) {
     vm_write_string(vm, SV("Hello, world!"));
     vm_write_call(vm, SV("printf"), 1);
     
-    vm_write_string(vm, SV("%d"));
     vm_write_number(vm, 1);
     vm_write_number(vm, 2);
     vm_write_add(vm);
+    vm_write_string(vm, SV("%d"));
     vm_write_call(vm, SV("printf"), 2);
 
     vm_write_call(vm, SV("test"), 0);

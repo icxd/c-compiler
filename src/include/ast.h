@@ -3,50 +3,49 @@
 
 #include "sv.h"
 #include "types.h"
+#include "tokenizer.h"
 
-enum declaration_type_t { };
-enum statement_type_t { };
-enum expression_type_t { };
-enum type_type_t { };
+enum ast_type_t {
+    AST_PROGRAM = 0,
 
-struct declaration_t;
-struct statement_t;
-struct expression_t;
-struct type_t;
-struct parameter_t;
+    // Statements
+    // TODO: add statements
 
-struct declaration_t {
-    enum declaration_type_t type;
-    union {
-        struct {
-            string name;
-            struct type_t* type;
-            struct expression_t* value;
-        } constant_;
-    };
-    struct declaration_t* next;
+    // Expressions
+    AST_STRING,
+    AST_INTEGER,
+    AST_FLOAT,
+    // TODO: hex and binary numbers?
+    AST_BINARY,
+    AST_UNARY,
+    AST_VARIABLE,
 };
 
-struct statement_t {
-    enum statement_type_t type;
-    union {
-        
-    };
-    struct statement_t* next;
+struct ast_t;
+
+union ast_data_t {
+    struct { struct ast_t* statements; } program;
+    struct { string value; } string_;
+    struct { i64 value; } integer;
+    struct { f64 value; } float_;
+    struct {
+        struct token_t op;
+        struct ast_t* left;
+        struct ast_t* right;
+    } binary_op;
+    struct {
+        struct token_t op;
+        struct ast_t* left;
+    } unary_op;
+    struct { string identifier; } variable;
 };
 
-struct expression_t {
-    enum expression_type_t type;
-    union {
-        
-    };
+struct ast_t {
+    enum ast_type_t type;
+    union ast_data_t data;
+    struct ast_t* next;
 };
 
-struct type_t {
-    enum type_type_t type;
-    union {
-        
-    };
-};
+void ast_print(struct ast_t* ast, u32 indent);
 
 #endif // AST_H
