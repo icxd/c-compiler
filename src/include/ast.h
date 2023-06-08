@@ -15,7 +15,6 @@ enum ast_type_t {
     AST_STRING,
     AST_INTEGER,
     AST_FLOAT,
-    // TODO: hex and binary numbers?
     AST_BINARY,
     AST_UNARY,
     AST_VARIABLE,
