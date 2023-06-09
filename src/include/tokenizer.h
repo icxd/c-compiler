@@ -14,6 +14,8 @@ enum token_type_t {
     TK_HEXADECIMAL,
     TK_BINARY,
 
+    TK_TRUE, TK_FALSE, TK_NULL,
+
     TK_OPEN_PAREN,
     TK_CLOSE_PAREN,
     TK_OPEN_BRACE,

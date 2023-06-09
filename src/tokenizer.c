@@ -163,7 +163,11 @@ struct token_t tokenizer_next(struct tokenizer_t* tokenizer) {
             tokenizer->column++;
             tokenizer->index++;
         }
-        token.value = sv_substr(tokenizer->contents, start, tokenizer->index);
+        string value = sv_substr(tokenizer->contents, start, tokenizer->index);
+        if (sv_compare(value, SV("true")) == 0) token.type = TK_TRUE;
+        else if (sv_compare(value, SV("false")) == 0) token.type = TK_FALSE;
+        else if (sv_compare(value, SV("null")) == 0) token.type = TK_NULL;
+        token.value = value;
         return token;
     }
     
