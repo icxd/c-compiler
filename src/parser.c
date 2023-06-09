@@ -94,6 +94,15 @@ struct ast_t* parser_parse_statement(struct parser_t* p) {
             }
             
             statement->type = AST_CONSTANT_DECLARATION;
+
+            if (p->token.type == TK_SEMICOLON) {
+                p->token = tokenizer_next(p->tokenizer);
+                statement->data.const_decl.name = identifier;
+                statement->data.const_decl.type = type;
+                statement->data.const_decl.value = NULL;
+                return statement;    
+            }
+
             p->token = tokenizer_next(p->tokenizer);
 
             statement->data.const_decl.name = identifier;
@@ -171,8 +180,9 @@ struct ast_t* parser_parse_primary(struct parser_t* p) {
         expression->data.boolean.value = false;
     } else if (token.type == TK_NULL) {
         expression->type = AST_NULL;
-    } else if (token.type == TK_OPEN_PAREN) {
+    } else if (token.type == TK_FN) {
         expression->type = AST_FUNCTION;
+        p->token = tokenizer_next(p->tokenizer);
         struct parameter_t* parameters = NULL;
         while (p->token.type != TK_CLOSE_PAREN) {
             struct parameter_t* parameter = malloc(sizeof(struct parameter_t));
@@ -184,6 +194,18 @@ struct ast_t* parser_parse_primary(struct parser_t* p) {
             }
 
             p->token = tokenizer_next(p->tokenizer);
+
+            if (p->token.type == TK_PERIOD) {
+                p->token = tokenizer_next(p->tokenizer);
+                p->token = tokenizer_next(p->tokenizer);
+                p->token = tokenizer_next(p->tokenizer);
+
+                expression->data.function.variadic_parameter_name = identifier;
+                expression->data.function.is_variadic = true;
+
+                break;
+            }
+
             struct type_t* type = parser_parse_type(p);
             if (type == NULL) {
                 fprintf(stderr, "Error: Expected type at line %d, column %d\n", p->token.line, p->token.column);
@@ -212,8 +234,8 @@ struct ast_t* parser_parse_primary(struct parser_t* p) {
         }
 
         if (p->token.type != TK_OPEN_BRACE) {
-            fprintf(stderr, "Error: Expected open brace at line %d, column %d\n", p->token.line, p->token.column);
-            return NULL;
+            expression->data.function.body = NULL;
+            return expression;
         }
 
         p->token = tokenizer_next(p->tokenizer);
@@ -303,6 +325,10 @@ struct type_t* parser_parse_type(struct parser_t* p) {
     } else if (p->token.type == TK_VOID) {
         type->type = TYPE_VOID;
         p->token = tokenizer_next(p->tokenizer);
+    } else if (p->token.type == TK_ASTERISK) {
+        p->token = tokenizer_next(p->tokenizer);
+        type->type = TYPE_POINTER;
+        type->data.pointer.inner = parser_parse_type(p);
     } else {
         fprintf(stderr, "Error: Expected type at line %d, column %d\n", p->token.line, p->token.column);
         return NULL;
