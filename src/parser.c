@@ -137,6 +137,14 @@ struct ast_t* parser_parse_primary(struct parser_t* p) {
         expression->type = AST_INTEGER;
         expression->data.integer.value = strtol(token.value.chars, NULL, 2);
         expression->data.integer.base = BASE_BINARY;
+    } else if (token.type == TK_TRUE) {
+        expression->type = AST_BOOLEAN;
+        expression->data.boolean.value = true;
+    } else if (token.type == TK_FALSE) {
+        expression->type = AST_BOOLEAN;
+        expression->data.boolean.value = false;
+    } else if (token.type == TK_NULL) {
+        expression->type = AST_NULL;
     } else {
         fprintf(stderr, "Unexpected token: \""SV_ARG"\" (%d) at line %d, column %d\n", SV_FMT(token.value), token.type, token.line, token.column);
         return NULL;
