@@ -233,6 +233,32 @@ struct ast_t* parser_parse_primary(struct parser_t* p) {
             expression->data.function.return_type->type = TYPE_VOID;
         }
 
+        while (p->token.type == TK_HASH) {
+            p->token = tokenizer_next(p->tokenizer);
+            
+            if (p->token.type != TK_IDENTIFIER) {
+                fprintf(stderr, "Error: Expected identifier at line %d, column %d\n", p->token.line, p->token.column);
+                return NULL;
+            }
+
+            string identifier = p->token.value;
+            p->token = tokenizer_next(p->tokenizer);
+
+            if (sv_compare(identifier, SV("foreign")) == 0) {
+                if (p->token.type != TK_STRING) {
+                    fprintf(stderr, "Error: Expected string at line %d, column %d\n", p->token.line, p->token.column);
+                    return NULL;
+                }
+
+                expression->data.function.foreign = true;
+                expression->data.function.foreign_name = p->token.value;
+                p->token = tokenizer_next(p->tokenizer);
+            } else {
+                fprintf(stderr, "Error: Unknown attribute \""SV_ARG"\" at line %d, column %d\n", SV_FMT(identifier), p->token.line, p->token.column);
+                return NULL;
+            }
+        }
+
         if (p->token.type != TK_OPEN_BRACE) {
             expression->data.function.body = NULL;
             return expression;
