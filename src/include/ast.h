@@ -30,14 +30,35 @@ enum integer_base_t {
     BASE_BINARY = 2,
 };
 
-enum type_t {
+enum type_type_t {
     TYPE_VOID = 0,
-    TYPE_STRING,
-    TYPE_INTEGER,
-    TYPE_FLOAT,
+    TYPE_CHAR,
+    TYPE_I8, TYPE_I16, TYPE_I32, TYPE_I64,
+    TYPE_U8, TYPE_U16, TYPE_U32, TYPE_U64,
+    TYPE_F32, TYPE_F64,
     TYPE_BOOLEAN,
+    TYPE_GENERIC,
     TYPE_FUNCTION,
     TYPE_UNKNOWN,
+};
+
+struct type_t {
+    enum type_type_t type;
+    union {
+        struct {
+            string identifier;
+            struct type_t* arguments;
+            u32 argument_count;
+        } generic;
+        struct {
+            struct type_t* return_type;
+            struct type_t* arguments;
+            u32 argument_count;
+        } function;
+        struct {
+            string identifier;
+        } unknown;
+    } data;
 };
 
 struct ast_t;
@@ -45,6 +66,7 @@ struct ast_t;
 union ast_data_t {
     struct {
         string name;
+        struct type_t* type;
         struct ast_t* value;
     } const_decl;
     struct {
@@ -82,6 +104,7 @@ struct ast_t {
     struct ast_t* next;
 };
 
+void type_print(struct type_t* type);
 void ast_print(struct ast_t* ast, u32 indent);
 
 #endif // AST_H

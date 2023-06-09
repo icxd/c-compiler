@@ -17,6 +17,36 @@ static char* bianry_repr(int n) {
     return binary;
 }
 
+void type_print(struct type_t* type) {
+    if (type == NULL) {
+        return;
+    }
+
+    switch (type->type) {
+        case TYPE_VOID: { printf("void"); break; }
+        case TYPE_CHAR: { printf("char"); break; }
+        case TYPE_I8: { printf("i8"); break; }
+        case TYPE_I16: { printf("i16"); break; }
+        case TYPE_I32: { printf("i32"); break; }
+        case TYPE_I64: { printf("i64"); break; }
+        case TYPE_U8: { printf("u8"); break; }
+        case TYPE_U16: { printf("u16"); break; }
+        case TYPE_U32: { printf("u32"); break; }
+        case TYPE_U64: { printf("u64"); break; }
+        case TYPE_F32: { printf("f32"); break; }
+        case TYPE_F64: { printf("f64"); break; }
+        case TYPE_BOOLEAN: { printf("boolean"); break; }
+        case TYPE_UNKNOWN: {
+            printf("unknown ("SV_ARG")", SV_FMT(type->data.unknown.identifier));
+            break;
+        }
+        default: {
+            printf("<unknown type>");
+            break;
+        }
+    }
+}
+
 void ast_print(struct ast_t* ast, u32 indent) {
     if (ast == NULL) {
         return;
@@ -33,6 +63,18 @@ void ast_print(struct ast_t* ast, u32 indent) {
             break;
         }
 
+        case AST_CONSTANT_DECLARATION: {
+            printf("AST_CONSTANT_DECLARATION: \""SV_ARG"\"", SV_FMT(ast->data.const_decl.name));
+            if (ast->data.const_decl.type != NULL) {
+                printf(" : ");
+                type_print(ast->data.const_decl.type);
+            } else {
+                printf(" : <null>");
+            }
+            printf("\n");
+            ast_print(ast->data.const_decl.value, indent + 1);
+            break;
+        }
         case AST_TOP_LEVEL_ATTRIBUTE: {
             printf("AST_TOP_LEVEL_ATTRIBUTE: \""SV_ARG"\"\n", SV_FMT(ast->data.top_level_attribute.name));
             if (ast->data.top_level_attribute.value != NULL) {
