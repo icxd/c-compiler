@@ -121,8 +121,8 @@ union ast_data_t {
         
         struct ast_t* body;
 
-        struct attribute_t* attributes;
-        u32 attribute_count;
+        bool foreign;
+        string foreign_name;
 
         string variadic_parameter_name;
         bool is_variadic;
