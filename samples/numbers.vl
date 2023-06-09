@@ -1,14 +1,10 @@
-"string";
-1234;
-12.34;
-0x1234;
-0b1010;
-// #attribute "whatever"
-#foreign "printf"
-
-// true; false; null;
+boolean : bool : true;
+no_value : f64;
+null_value : *char : null;
 
 abc : i32 : 123;
-add :: (x: i32, y: i32) -> i32 {
-    "hi";
+
+add :: fn(x: i32, y: i32) -> i32 {
 };
+
+printf :: fn(fmt: *char, args: ...) -> i32;
