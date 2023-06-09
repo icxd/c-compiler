@@ -76,6 +76,14 @@ void ast_print(struct ast_t* ast, u32 indent) {
             printf("AST_FLOAT: %f\n", ast->data.float_.value);
             break;
         }
+        case AST_BOOLEAN: {
+            printf("AST_BOOLEAN: %s\n", ast->data.boolean.value ? "true" : "false");
+            break;
+        }
+        case AST_NULL: {
+            printf("AST_NULL\n");
+            break;
+        }
         case AST_BINARY: {
             printf("AST_BINARY: "SV_ARG"\n", SV_FMT(ast->data.binary_op.op.value));
             ast_print(ast->data.binary_op.left, indent + 1);
