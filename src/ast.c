@@ -150,6 +150,9 @@ void ast_print(struct ast_t* ast, u32 indent) {
             } else {
                 printf("<null>");
             }
+            if (ast->data.function.foreign) {
+                printf(" #foreign "SV_ARG, SV_FMT(ast->data.function.foreign_name));
+            }
             printf("\n");
             struct parameter_t* param = ast->data.function.parameters;
             while (param != NULL) {
