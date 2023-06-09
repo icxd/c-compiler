@@ -167,6 +167,19 @@ struct token_t tokenizer_next(struct tokenizer_t* tokenizer) {
         if (sv_compare(value, SV("true")) == 0) token.type = TK_TRUE;
         else if (sv_compare(value, SV("false")) == 0) token.type = TK_FALSE;
         else if (sv_compare(value, SV("null")) == 0) token.type = TK_NULL;
+        else if (sv_compare(value, SV("void")) == 0) token.type = TK_VOID;
+        else if (sv_compare(value, SV("char")) == 0) token.type = TK_CHAR;
+        else if (sv_compare(value, SV("i8")) == 0) token.type = TK_I8;
+        else if (sv_compare(value, SV("i16")) == 0) token.type = TK_I16;
+        else if (sv_compare(value, SV("i32")) == 0) token.type = TK_I32;
+        else if (sv_compare(value, SV("i64")) == 0) token.type = TK_I64;
+        else if (sv_compare(value, SV("u8")) == 0) token.type = TK_U8;
+        else if (sv_compare(value, SV("u16")) == 0) token.type = TK_U16;
+        else if (sv_compare(value, SV("u32")) == 0) token.type = TK_U32;
+        else if (sv_compare(value, SV("u64")) == 0) token.type = TK_U64;
+        else if (sv_compare(value, SV("f32")) == 0) token.type = TK_F32;
+        else if (sv_compare(value, SV("f64")) == 0) token.type = TK_F64;
+        else if (sv_compare(value, SV("bool")) == 0) token.type = TK_BOOL;
         token.value = value;
         return token;
     }

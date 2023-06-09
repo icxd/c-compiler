@@ -15,6 +15,12 @@ enum token_type_t {
     TK_BINARY,
 
     TK_TRUE, TK_FALSE, TK_NULL,
+    TK_VOID,
+    TK_CHAR,
+    TK_I8, TK_I16, TK_I32, TK_I64,
+    TK_U8, TK_U16, TK_U32, TK_U64,
+    TK_F32, TK_F64,
+    TK_BOOL,
 
     TK_OPEN_PAREN,
     TK_CLOSE_PAREN,
