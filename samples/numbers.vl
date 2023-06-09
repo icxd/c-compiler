@@ -6,3 +6,5 @@ hi;
 0b1010;
 // #attribute "whatever"
 #foreign "printf"
+
+true; false; null;
