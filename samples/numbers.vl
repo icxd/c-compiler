@@ -1,5 +1,4 @@
 "string";
-hi;
 1234;
 12.34;
 0x1234;
@@ -7,4 +6,6 @@ hi;
 // #attribute "whatever"
 #foreign "printf"
 
-true; false; null;
+// true; false; null;
+
+abc : i32 : 123;
