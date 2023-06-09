@@ -39,6 +39,7 @@ enum type_type_t {
     TYPE_F32, TYPE_F64,
     TYPE_BOOLEAN,
     TYPE_POINTER,
+    TYPE_ARRAY,
     TYPE_GENERIC,
     TYPE_FUNCTION,
     TYPE_UNKNOWN,
@@ -50,6 +51,11 @@ struct type_t {
         struct {
             struct type_t* inner;
         } pointer;
+        struct {
+            struct type_t* inner;
+            bool is_fixed;
+            u32 size;
+        } array;
         struct {
             string identifier;
             struct type_t* arguments;

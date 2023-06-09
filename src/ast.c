@@ -41,6 +41,15 @@ void type_print(struct type_t* type) {
             type_print(type->data.pointer.inner);
             break;
         }
+        case TYPE_ARRAY: {
+            printf("[");
+            if (type->data.array.is_fixed) {
+                printf("%d", type->data.array.size);
+            }
+            printf("]");
+            type_print(type->data.array.inner);
+            break;
+        }
         case TYPE_UNKNOWN: {
             printf("unknown ("SV_ARG")", SV_FMT(type->data.unknown.identifier));
             break;
