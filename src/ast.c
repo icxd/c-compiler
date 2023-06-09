@@ -37,7 +37,7 @@ void type_print(struct type_t* type) {
         case TYPE_F64: printf("f64"); break;
         case TYPE_BOOLEAN: printf("boolean"); break;
         case TYPE_POINTER: {
-            printf("pointer to ");
+            printf("*");
             type_print(type->data.pointer.inner);
             break;
         }
