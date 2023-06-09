@@ -7,4 +7,4 @@ abc : i32 : 123;
 add :: fn(x: i32, y: i32) -> i32 {
 };
 
-printf :: fn(fmt: *char, args: ...) -> i32;
+printf :: fn(fmt: *char, args: ...) -> i32 #foreign "printf";
