@@ -171,6 +171,67 @@ struct ast_t* parser_parse_primary(struct parser_t* p) {
         expression->data.boolean.value = false;
     } else if (token.type == TK_NULL) {
         expression->type = AST_NULL;
+    } else if (token.type == TK_OPEN_PAREN) {
+        expression->type = AST_FUNCTION;
+        struct parameter_t* parameters = NULL;
+        while (p->token.type != TK_CLOSE_PAREN) {
+            struct parameter_t* parameter = malloc(sizeof(struct parameter_t));
+            string identifier = p->token.value;
+            p->token = tokenizer_next(p->tokenizer);
+            if (p->token.type != TK_COLON) {
+                fprintf(stderr, "Error: Expected colon at line %d, column %d\n", p->token.line, p->token.column);
+                return NULL;
+            }
+
+            p->token = tokenizer_next(p->tokenizer);
+            struct type_t* type = parser_parse_type(p);
+            if (type == NULL) {
+                fprintf(stderr, "Error: Expected type at line %d, column %d\n", p->token.line, p->token.column);
+                return NULL;
+            }
+
+            parameter->name = identifier;
+            parameter->type = type;
+            parameter->default_value = NULL;
+            parameter->next = parameters;
+            parameters = parameter;
+
+            if (p->token.type == TK_COMMA) {
+                p->token = tokenizer_next(p->tokenizer);
+            }
+        }
+        expression->data.function.parameters = parameters;
+        p->token = tokenizer_next(p->tokenizer);
+
+        if (p->token.type == TK_ARROW) {
+            p->token = tokenizer_next(p->tokenizer);
+            expression->data.function.return_type = parser_parse_type(p);
+        } else {
+            expression->data.function.return_type = (struct type_t*) malloc(sizeof(struct type_t));
+            expression->data.function.return_type->type = TYPE_VOID;
+        }
+
+        if (p->token.type != TK_OPEN_BRACE) {
+            fprintf(stderr, "Error: Expected open brace at line %d, column %d\n", p->token.line, p->token.column);
+            return NULL;
+        }
+
+        p->token = tokenizer_next(p->tokenizer);
+        
+        struct ast_t* statements = NULL;
+        while (p->token.type != TK_CLOSE_BRACE) {
+            struct ast_t* statement = parser_parse_statement(p);
+            if (statement == NULL) {
+                fprintf(stderr, "Error: Expected statement at line %d, column %d\n", p->token.line, p->token.column);
+                return NULL;
+            }
+
+            statement->next = statements;
+            statements = statement;
+        }
+
+        expression->data.function.body = statements;
+        p->token = tokenizer_next(p->tokenizer);
     } else {
         fprintf(stderr, "Unexpected token: \""SV_ARG"\" (%d) at line %d, column %d\n", SV_FMT(token.value), token.type, token.line, token.column);
         return NULL;
