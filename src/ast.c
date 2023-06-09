@@ -36,6 +36,11 @@ void type_print(struct type_t* type) {
         case TYPE_F32: printf("f32"); break;
         case TYPE_F64: printf("f64"); break;
         case TYPE_BOOLEAN: printf("boolean"); break;
+        case TYPE_POINTER: {
+            printf("pointer to ");
+            type_print(type->data.pointer.inner);
+            break;
+        }
         case TYPE_UNKNOWN: {
             printf("unknown ("SV_ARG")", SV_FMT(type->data.unknown.identifier));
             break;

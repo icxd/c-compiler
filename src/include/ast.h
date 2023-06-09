@@ -38,6 +38,7 @@ enum type_type_t {
     TYPE_U8, TYPE_U16, TYPE_U32, TYPE_U64,
     TYPE_F32, TYPE_F64,
     TYPE_BOOLEAN,
+    TYPE_POINTER,
     TYPE_GENERIC,
     TYPE_FUNCTION,
     TYPE_UNKNOWN,
@@ -46,6 +47,9 @@ enum type_type_t {
 struct type_t {
     enum type_type_t type;
     union {
+        struct {
+            struct type_t* inner;
+        } pointer;
         struct {
             string identifier;
             struct type_t* arguments;
@@ -120,6 +124,7 @@ union ast_data_t {
         struct attribute_t* attributes;
         u32 attribute_count;
 
+        string variadic_parameter_name;
         bool is_variadic;
     } function;
 };
