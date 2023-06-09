@@ -22,4 +22,6 @@ struct ast_t* parser_parse_binary(struct parser_t* p);
 struct ast_t* parser_parse_unary(struct parser_t* p);
 struct ast_t* parser_parse_primary(struct parser_t* p);
 
+struct type_t* parser_parse_type(struct parser_t* p);
+
 #endif // PARSER_H

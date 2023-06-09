@@ -81,6 +81,32 @@ struct ast_t* parser_parse_statement(struct parser_t* p) {
             fprintf(stderr, "Error: Unknown top-level attribute: \""SV_ARG"\" at line %d, column %d\n", SV_FMT(identifier), p->token.line, p->token.column);
             return NULL;
         }
+    } else if (p->token.type == TK_IDENTIFIER) {
+        string identifier = p->token.value;
+        p->token = tokenizer_next(p->tokenizer);
+
+        if (p->token.type == TK_COLON) {
+            p->token = tokenizer_next(p->tokenizer);
+
+            struct type_t* type = NULL;
+            if (p->token.type != TK_COLON) {
+                type = parser_parse_type(p);                
+            }
+            
+            statement->type = AST_CONSTANT_DECLARATION;
+            p->token = tokenizer_next(p->tokenizer);
+
+            statement->data.const_decl.name = identifier;
+            statement->data.const_decl.type = type;
+            statement->data.const_decl.value = parser_parse_expression(p);
+
+            if (p->token.type != TK_SEMICOLON) {
+                fprintf(stderr, "Error: Expected semicolon at line %d, column %d\n", p->token.line, p->token.column);
+                return NULL;
+            }
+
+            p->token = tokenizer_next(p->tokenizer);
+        }
     } else {
         // parse expression statement
         statement->type = AST_EXPRESSION_STATEMENT;
@@ -151,4 +177,75 @@ struct ast_t* parser_parse_primary(struct parser_t* p) {
     }
     
     return expression;
+}
+
+struct type_t* parser_parse_type(struct parser_t* p) {
+    struct type_t* type = malloc(sizeof(struct type_t));
+
+    if (p->token.type == TK_IDENTIFIER) {
+        string identifier = p->token.value;
+        p->token = tokenizer_next(p->tokenizer);
+
+        // if (p->token.type == TK_LESS_THAN) {
+        //     p->token = tokenizer_next(p->tokenizer);
+
+        //     type->type = TYPE_GENERIC;
+        //     type->data.generic.identifier = identifier;
+        //     type->data.generic.arguments = parser_parse_type_arguments(p);
+
+        //     if (p->token.type != TK_GREATER_THAN) {
+        //         fprintf(stderr, "Error: Expected \">\" at line %d, column %d\n", p->token.line, p->token.column);
+        //         return NULL;
+        //     }
+
+        //     p->token = tokenizer_next(p->tokenizer);
+        // } else {
+        type->type = TYPE_UNKNOWN;
+        type->data.unknown.identifier = identifier;
+        // }
+    } else if (p->token.type == TK_I8) {
+        type->type = TYPE_I8;
+        p->token = tokenizer_next(p->tokenizer);
+    } else if (p->token.type == TK_I16) {
+        type->type = TYPE_I16;
+        p->token = tokenizer_next(p->tokenizer);
+    } else if (p->token.type == TK_I32) {
+        type->type = TYPE_I32;
+        p->token = tokenizer_next(p->tokenizer);
+    } else if (p->token.type == TK_I64) {
+        type->type = TYPE_I64;
+        p->token = tokenizer_next(p->tokenizer);
+    } else if (p->token.type == TK_U8) {
+        type->type = TYPE_U8;
+        p->token = tokenizer_next(p->tokenizer);
+    } else if (p->token.type == TK_U16) {
+        type->type = TYPE_U16;
+        p->token = tokenizer_next(p->tokenizer);
+    } else if (p->token.type == TK_U32) {
+        type->type = TYPE_U32;
+        p->token = tokenizer_next(p->tokenizer);
+    } else if (p->token.type == TK_U64) {
+        type->type = TYPE_U64;
+        p->token = tokenizer_next(p->tokenizer);
+    } else if (p->token.type == TK_F32) {
+        type->type = TYPE_F32;
+        p->token = tokenizer_next(p->tokenizer);
+    } else if (p->token.type == TK_F64) {
+        type->type = TYPE_F64;
+        p->token = tokenizer_next(p->tokenizer);
+    } else if (p->token.type == TK_CHAR) {
+        type->type = TYPE_CHAR;
+        p->token = tokenizer_next(p->tokenizer);
+    } else if (p->token.type == TK_BOOL) {
+        type->type = TYPE_BOOLEAN;
+        p->token = tokenizer_next(p->tokenizer);
+    } else if (p->token.type == TK_VOID) {
+        type->type = TYPE_VOID;
+        p->token = tokenizer_next(p->tokenizer);
+    } else {
+        fprintf(stderr, "Error: Expected type at line %d, column %d\n", p->token.line, p->token.column);
+        return NULL;
+    }
+
+    return type;
 }
