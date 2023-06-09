@@ -22,6 +22,7 @@ enum ast_type_t {
     AST_BINARY,
     AST_UNARY,
     AST_VARIABLE,
+    AST_FUNCTION,
 };
 
 enum integer_base_t {
@@ -61,6 +62,18 @@ struct type_t {
     } data;
 };
 
+struct attribute_t {
+    string name;
+    struct ast_t* value;
+};
+
+struct parameter_t {
+    string name;
+    struct type_t* type;
+    struct ast_t* default_value;
+    struct parameter_t* next;
+};
+
 struct ast_t;
 
 union ast_data_t {
@@ -96,6 +109,19 @@ union ast_data_t {
         struct ast_t* left;
     } unary_op;
     struct { string identifier; } variable;
+    struct {
+        struct type_t* return_type; // TODO: multiple return types.
+        u32 return_types_count; // unused
+
+        struct parameter_t* parameters;
+        
+        struct ast_t* body;
+
+        struct attribute_t* attributes;
+        u32 attribute_count;
+
+        bool is_variadic;
+    } function;
 };
 
 struct ast_t {
