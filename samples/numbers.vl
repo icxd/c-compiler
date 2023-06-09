@@ -9,3 +9,6 @@
 // true; false; null;
 
 abc : i32 : 123;
+add :: (x: i32, y: i32) -> i32 {
+    "hi";
+};
