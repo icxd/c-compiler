@@ -3,6 +3,8 @@ no_value : f64;
 null_value : *char : null;
 
 abc : i32 : 123;
+def :: 0xFF;
+ghi :: 0b101010;
 
 add :: fn(x: i32, y: i32) -> i32 {
 };
