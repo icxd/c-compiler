@@ -45,6 +45,8 @@ enum type_type_t {
     TYPE_UNKNOWN,
 };
 
+struct ast_t;
+
 struct type_t {
     enum type_type_t type;
     union {
@@ -54,7 +56,7 @@ struct type_t {
         struct {
             struct type_t* inner;
             bool is_fixed;
-            u32 size;
+            u64 size;
         } array;
         struct {
             string identifier;
@@ -83,8 +85,6 @@ struct parameter_t {
     struct ast_t* default_value;
     struct parameter_t* next;
 };
-
-struct ast_t;
 
 union ast_data_t {
     struct {

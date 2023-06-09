@@ -355,6 +355,32 @@ struct type_t* parser_parse_type(struct parser_t* p) {
         p->token = tokenizer_next(p->tokenizer);
         type->type = TYPE_POINTER;
         type->data.pointer.inner = parser_parse_type(p);
+    } else if (p->token.type == TK_OPEN_BRACKET) {
+        p->token = tokenizer_next(p->tokenizer);
+        type->type = TYPE_ARRAY;
+        if (p->token.type != TK_CLOSE_BRACKET) {
+            type->data.array.is_fixed = true;
+            u64 size;
+            if (p->token.type == TK_INTEGER) {
+                size = atoi(p->token.value.chars);
+                p->token = tokenizer_next(p->tokenizer);
+            } else {
+                fprintf(stderr, "Error: Expected integer at line %d, column %d\n", p->token.line, p->token.column);
+                return NULL;
+            }
+
+            type->data.array.size = size;
+
+            if (p->token.type != TK_CLOSE_BRACKET) {
+                fprintf(stderr, "Error: Expected \"]\" at line %d, column %d\n", p->token.line, p->token.column);
+                return NULL;
+            }
+        } else {
+            type->data.array.is_fixed = false;
+        }
+
+        p->token = tokenizer_next(p->tokenizer);
+        type->data.array.inner = parser_parse_type(p);
     } else {
         fprintf(stderr, "Error: Expected type at line %d, column %d\n", p->token.line, p->token.column);
         return NULL;
