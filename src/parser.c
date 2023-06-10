@@ -186,6 +186,7 @@ struct ast_t* parser_parse_primary(struct parser_t* p) {
         struct parameter_t* parameters = NULL;
         while (p->token.type != TK_CLOSE_PAREN) {
             struct parameter_t* parameter = malloc(sizeof(struct parameter_t));
+            parameter->type = NULL;
             string identifier = p->token.value;
             p->token = tokenizer_next(p->tokenizer);
             if (p->token.type != TK_COLON) {
@@ -244,6 +245,8 @@ struct ast_t* parser_parse_primary(struct parser_t* p) {
             expression->data.function.return_type->type = TYPE_VOID;
         }
 
+        expression->data.function.foreign = false;
+
         while (p->token.type == TK_HASH) {
             p->token = tokenizer_next(p->tokenizer);
             
@@ -254,8 +257,6 @@ struct ast_t* parser_parse_primary(struct parser_t* p) {
 
             string identifier = p->token.value;
             p->token = tokenizer_next(p->tokenizer);
-
-            expression->data.function.foreign = false;
 
             if (sv_compare(identifier, SV("foreign")) == 0) {
                 if (p->token.type != TK_STRING) {
@@ -305,6 +306,7 @@ struct ast_t* parser_parse_primary(struct parser_t* p) {
         struct parameter_t* fields = NULL;
         while (p->token.type != TK_CLOSE_BRACE) {
             struct parameter_t* field = malloc(sizeof(struct parameter_t));
+            field->type = NULL;
             string identifier = p->token.value;
             p->token = tokenizer_next(p->tokenizer);
             if (p->token.type != TK_COLON) {
