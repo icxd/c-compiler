@@ -9,6 +9,14 @@ ghi :: 0b101010;
 dynamic_array : []i32;
 static_array : [3]i32;
 
+Vec3 :: struct {
+    x : i32;
+    y : i32 = 0;
+    z := 0;
+};
+
+default_arguments_sample :: fn(a := 1, b: i32 = 123) { };
+
 add :: fn(x: i32, y: i32) -> i32 {
 };
 
