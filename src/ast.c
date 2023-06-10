@@ -175,10 +175,39 @@ void ast_print(struct ast_t* ast, u32 indent) {
                 } else {
                     printf(" : <null>");
                 }
-                printf("\n");
+                if (param->default_value != NULL) {
+                    printf("\n");
+                    ast_print(param->default_value, indent + 2);
+                } else {
+                    printf("\n");
+                }
                 param = param->next;
             }
             ast_print(ast->data.function.body, indent + 1);
+            break;
+        }
+        case AST_STRUCT: {
+            printf("AST_STRUCT\n");
+            struct parameter_t* field = ast->data.struct_.fields;
+            while (field != NULL) {
+                for (u32 i = 0; i < indent + 1; i++) {
+                    printf("    ");
+                }
+                printf("Field: \""SV_ARG"\"", SV_FMT(field->name));
+                if (field->type != NULL) {
+                    printf(" : ");
+                    type_print(field->type);
+                } else {
+                    printf(" : <null>");
+                }
+                if (field->default_value != NULL) {
+                    printf("\n");
+                    ast_print(field->default_value, indent + 2);
+                } else {
+                    printf("\n");
+                }
+                field = field->next;
+            }
             break;
         }
         default: {

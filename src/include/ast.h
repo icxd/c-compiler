@@ -23,6 +23,7 @@ enum ast_type_t {
     AST_UNARY,
     AST_VARIABLE,
     AST_FUNCTION,
+    AST_STRUCT,
 };
 
 enum integer_base_t {
@@ -133,6 +134,10 @@ union ast_data_t {
         string variadic_parameter_name;
         bool is_variadic;
     } function;
+    struct {
+        struct parameter_t* fields; // this uses the parameter_t struct because
+                                    // it's basically the same as a function parameter.
+    } struct_;
 };
 
 struct ast_t {
