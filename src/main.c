@@ -17,7 +17,7 @@
 
 int main(int argc, char** argv) {
     if (argc < 2) {
-        fprintf(stderr, "Usage: main <filename> [options]\n");
+        fprintf(stderr, "Usage: %s <filename> [options]\n", argv[0]);
         return 1;
     }
 
