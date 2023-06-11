@@ -14,7 +14,7 @@ int sv_compare(struct string_view_t a, struct string_view_t b) {
     return 1;
 }
 
-int sv_compare_cstring(struct string_view_t a, char* b) {
+int sv_compare_cstr(struct string_view_t a, char* b) {
     return sv_compare(a, SV(b));
 }
 

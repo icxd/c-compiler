@@ -13,7 +13,7 @@ struct string_view_t {
 #define SV_FMT(sv) (int)(sv).size, (sv).chars
 
 int sv_compare(struct string_view_t a, struct string_view_t b);
-int sv_compare_cstring(struct string_view_t a, char* b);
+int sv_compare_cstr(struct string_view_t a, char* b);
 struct string_view_t sv_substr(struct string_view_t sv, unsigned int start, unsigned int end);
 char sv_at(struct string_view_t sv, unsigned int index);
 struct string_view_t sv_trim(struct string_view_t sv);
