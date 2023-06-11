@@ -17,7 +17,13 @@ Vec3 :: struct {
 
 default_arguments_sample :: fn(a := 1, b: i32 = 123) { };
 
+my_inline_fn :: fn() -> i32 #inline {
+};
+
 add :: fn(x: i32, y: i32) -> i32 {
 };
 
 printf :: fn(fmt: *char, args: ...) -> i32 #foreign "printf";
+
+main :: fn() -> i32 #entry_point {
+};
