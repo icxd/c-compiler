@@ -1,6 +1,13 @@
 # c-compiler
 
+## todo
 
+* [ ] parse generic type.
+* [ ] union and enums
+* [x] structs
+* [ ] typechecking
+* [ ] type inference
+* [ ] llvm backend
 
 ## known bugs
 
