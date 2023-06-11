@@ -4,14 +4,14 @@
 #include "include/sv.h"
 
 int sv_compare(struct string_view_t a, struct string_view_t b) {
-    if (a.size != b.size) return -1;
+    if (a.size != b.size) return 0;
     for (unsigned int i = 0; i < a.size; i++) {
         if (a.chars[i] != b.chars[i]) {
-            return -1;
+            return 0;
         }
     }
 
-    return 0;
+    return 1;
 }
 
 struct string_view_t sv_substr(struct string_view_t sv, unsigned int start, unsigned int end) {
