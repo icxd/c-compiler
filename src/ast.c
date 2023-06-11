@@ -162,6 +162,8 @@ void ast_print(struct ast_t* ast, u32 indent) {
             if (ast->data.function.foreign) {
                 printf(" #foreign "SV_ARG, SV_FMT(ast->data.function.foreign_name));
             }
+            if (ast->data.function.entry_point) printf(" #entry_point");
+            if (ast->data.function.inline_) printf(" #inline");
             printf("\n");
             struct parameter_t* param = ast->data.function.parameters;
             while (param != NULL) {

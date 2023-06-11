@@ -130,6 +130,8 @@ union ast_data_t {
 
         bool foreign;
         string foreign_name;
+        bool entry_point;
+        bool inline_;
 
         string variadic_parameter_name;
         bool is_variadic;
@@ -137,6 +139,9 @@ union ast_data_t {
     struct {
         struct parameter_t* fields; // this uses the parameter_t struct because
                                     // it's basically the same as a function parameter.
+
+        bool foreign;
+        string foreign_name;
     } struct_;
 };
 
