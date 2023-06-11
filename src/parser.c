@@ -62,7 +62,7 @@ struct ast_t* parser_parse_statement(struct parser_t* p) {
         statement->type = AST_TOP_LEVEL_ATTRIBUTE;
         p->token = tokenizer_next(p->tokenizer);
         string identifier = p->token.value;
-        if (sv_compare(identifier, SV("foreign")) == 0) {
+        if (sv_compare(identifier, SV("foreign"))) {
             statement->data.top_level_attribute.name = identifier;
             statement->data.top_level_attribute.value = NULL;
             p->token = tokenizer_next(p->tokenizer);
@@ -258,7 +258,7 @@ struct ast_t* parser_parse_primary(struct parser_t* p) {
             string identifier = p->token.value;
             p->token = tokenizer_next(p->tokenizer);
 
-            if (sv_compare(identifier, SV("foreign")) == 0) {
+            if (sv_compare(identifier, SV("foreign"))) {
                 if (p->token.type != TK_STRING) {
                     fprintf(stderr, "Error: Expected string at line %d, column %d\n", p->token.line, p->token.column);
                     return NULL;

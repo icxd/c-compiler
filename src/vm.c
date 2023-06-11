@@ -67,7 +67,7 @@ void vm_write_load_global(struct vm_t* vm, string name) {
     };
     u32 index = 0;
     for (uint idx = 0; idx < vm->globals->size; idx++) {
-        if (vm->globals->symbols[idx].name.size == name.size && strncmp(vm->globals->symbols[idx].name.chars, name.chars, name.size) == 0) {
+        if (vm->globals->symbols[idx].name.size == name.size && strncmp(vm->globals->symbols[idx].name.chars, name.chars, name.size)) {
             index = vm->globals->symbols[idx].index;
             break;
         }
@@ -139,7 +139,7 @@ void vm_write_call(struct vm_t* vm, string name, uint arity) {
 
     u32 index = 0;
     for (uint idx = 0; idx < vm->globals->size; idx++) {
-        if (vm->globals->symbols[idx].name.size == name.size && strncmp(vm->globals->symbols[idx].name.chars, name.chars, name.size) == 0) {
+        if (vm->globals->symbols[idx].name.size == name.size && strncmp(vm->globals->symbols[idx].name.chars, name.chars, name.size)) {
             index = vm->globals->symbols[idx].index;
             break;
         }
