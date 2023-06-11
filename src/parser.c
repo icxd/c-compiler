@@ -246,6 +246,8 @@ struct ast_t* parser_parse_primary(struct parser_t* p) {
         }
 
         expression->data.function.foreign = false;
+        expression->data.function.entry_point = false;
+        expression->data.function.inline_ = false;
 
         while (p->token.type == TK_HASH) {
             p->token = tokenizer_next(p->tokenizer);
@@ -267,6 +269,10 @@ struct ast_t* parser_parse_primary(struct parser_t* p) {
                 expression->data.function.foreign = true;
                 expression->data.function.foreign_name = p->token.value;
                 p->token = tokenizer_next(p->tokenizer);
+            } else if (sv_compare(identifier, SV("entry_point"))) {
+                expression->data.function.entry_point = true;
+            } else if (sv_compare(identifier, SV("inline"))) {
+                expression->data.function.inline_ = true;
             } else {
                 fprintf(stderr, "Error: Unknown attribute \""SV_ARG"\" at line %d, column %d\n", SV_FMT(identifier), p->token.line, p->token.column);
                 return NULL;
