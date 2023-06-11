@@ -14,6 +14,10 @@ int sv_compare(struct string_view_t a, struct string_view_t b) {
     return 1;
 }
 
+int sv_compare_cstring(struct string_view_t a, char* b) {
+    return sv_compare(a, SV(b));
+}
+
 struct string_view_t sv_substr(struct string_view_t sv, unsigned int start, unsigned int end) {
     if (start > sv.size || end > sv.size)
         return (struct string_view_t){ .chars = NULL, .size = 0 };
