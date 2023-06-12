@@ -358,6 +358,59 @@ struct ast_t* parser_parse_primary(struct parser_t* p) {
             return NULL;
         }
         p->token = tokenizer_next(p->tokenizer);
+    } else if (token.type == TK_ENUM) {
+        expression->type = AST_ENUM;
+        expression->data.enum_.base_type = NULL;
+
+        if (p->token.type == TK_OPEN_PAREN) {
+            p->token = tokenizer_next(p->tokenizer);
+            expression->data.enum_.base_type = parser_parse_type(p);
+            if (expression->data.enum_.base_type == NULL) {
+                fprintf(stderr, "Error: Expected type at line %d, column %d\n", p->token.line, p->token.column);
+                return NULL;
+            }
+
+            if (p->token.type != TK_CLOSE_PAREN) {
+                fprintf(stderr, "Error: Expected close paren at line %d, column %d\n", p->token.line, p->token.column);
+                return NULL;
+            }
+            p->token = tokenizer_next(p->tokenizer);
+        } else {
+            expression->data.enum_.base_type = NULL;
+        }
+
+        if (p->token.type != TK_OPEN_BRACE) {
+            fprintf(stderr, "Error: Expected open brace at line %d, column %d\n", p->token.line, p->token.column);
+            return NULL;
+        }
+        p->token = tokenizer_next(p->tokenizer);
+
+        struct enum_variant_t* values = NULL;
+        while (p->token.type != TK_CLOSE_BRACE) {
+            struct enum_variant_t* value = malloc(sizeof(struct enum_variant_t));
+            value->name = p->token.value;
+            value->value = NULL;
+            p->token = tokenizer_next(p->tokenizer);
+
+            if (p->token.type == TK_ASSIGN) {
+                p->token = tokenizer_next(p->tokenizer);
+                value->value = parser_parse_expression(p);
+            }
+
+            value->next = values;
+            values = value;
+
+            if (p->token.type == TK_COMMA) {
+                p->token = tokenizer_next(p->tokenizer);
+            }
+        }
+        expression->data.enum_.variants = values;
+
+        if (p->token.type != TK_CLOSE_BRACE) {
+            fprintf(stderr, "Error: Expected close brace at line %d, column %d\n", p->token.line, p->token.column);
+            return NULL;
+        }
+        p->token = tokenizer_next(p->tokenizer);
     } else {
         fprintf(stderr, "Unexpected token: \""SV_ARG"\" (%d) at line %d, column %d\n", SV_FMT(token.value), token.type, token.line, token.column);
         return NULL;
