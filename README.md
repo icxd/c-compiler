@@ -3,7 +3,8 @@
 ## todo
 
 * [ ] parse generic type.
-* [ ] union and enums
+* [ ] union
+* [x] enums
 * [x] structs
 * [ ] typechecking
 * [ ] type inference
