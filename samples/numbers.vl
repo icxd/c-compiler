@@ -15,6 +15,12 @@ Vec3 :: struct {
     z := 0;
 };
 
+My_Enum :: enum(u8) {
+    A = 0,
+    B,
+    C,
+};
+
 default_arguments_sample :: fn(a := 1, b: i32 = 123) { };
 
 my_inline_fn :: fn() -> i32 #inline {
