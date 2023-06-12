@@ -411,6 +411,43 @@ struct ast_t* parser_parse_primary(struct parser_t* p) {
             return NULL;
         }
         p->token = tokenizer_next(p->tokenizer);
+    } else if (token.type == TK_UNION) {
+        expression->type = AST_UNION;
+
+        if (p->token.type != TK_OPEN_BRACE) {
+            fprintf(stderr, "Error: Expected open brace at line %d, column %d\n", p->token.line, p->token.column);
+            return NULL;
+        }
+        p->token = tokenizer_next(p->tokenizer);
+
+        struct union_field_t* fields = NULL;
+        while (p->token.type != TK_CLOSE_BRACE) {
+            struct union_field_t* field = malloc(sizeof(struct union_field_t));
+            // name : type,
+            field->name = p->token.value;
+            p->token = tokenizer_next(p->tokenizer);
+
+            if (p->token.type != TK_COLON) {
+                fprintf(stderr, "Error: Expected colon at line %d, column %d\n", p->token.line, p->token.column);
+                return NULL;
+            }
+            p->token = tokenizer_next(p->tokenizer);
+
+            field->type = parser_parse_type(p);
+            field->next = fields;
+            fields = field;
+
+            if (p->token.type == TK_COMMA) {
+                p->token = tokenizer_next(p->tokenizer);
+            }
+        }
+        expression->data.union_.fields = fields;
+
+        if (p->token.type != TK_CLOSE_BRACE) {
+            fprintf(stderr, "Error: Expected close brace at line %d, column %d\n", p->token.line, p->token.column);
+            return NULL;
+        }
+        p->token = tokenizer_next(p->tokenizer);
     } else {
         fprintf(stderr, "Unexpected token: \""SV_ARG"\" (%d) at line %d, column %d\n", SV_FMT(token.value), token.type, token.line, token.column);
         return NULL;
