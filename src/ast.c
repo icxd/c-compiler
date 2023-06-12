@@ -212,6 +212,31 @@ void ast_print(struct ast_t* ast, u32 indent) {
             }
             break;
         }
+        case AST_ENUM: {
+            printf("AST_ENUM");
+            if (ast->data.enum_.base_type != NULL) {
+                printf(" : ");
+                type_print(ast->data.enum_.base_type);
+            } else {
+                printf(" : <null>");
+            }
+            printf("\n");
+            struct enum_variant_t* variant = ast->data.enum_.variants;
+            while (variant != NULL) {
+                for (u32 i = 0; i < indent + 1; i++) {
+                    printf("    ");
+                }
+                printf("Variant: \""SV_ARG"\"", SV_FMT(variant->name));
+                if (variant->value != NULL) {
+                    printf("\n");
+                    ast_print(variant->value, indent + 2);
+                } else {
+                    printf("\n");
+                }
+                variant = variant->next;
+            }
+            break;
+        }
         default: {
             printf("Unknown AST type: %d\n", ast->type);
             break;
