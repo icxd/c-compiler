@@ -25,6 +25,7 @@ enum ast_type_t {
     AST_FUNCTION,
     AST_STRUCT,
     AST_ENUM,
+    AST_UNION,
 };
 
 enum integer_base_t {
@@ -94,6 +95,12 @@ struct enum_variant_t {
     struct enum_variant_t* next;
 };
 
+struct union_field_t {
+    string name;
+    struct type_t* type;
+    struct union_field_t* next;
+};
+
 union ast_data_t {
     struct {
         string name;
@@ -154,6 +161,9 @@ union ast_data_t {
         struct type_t* base_type;
         struct enum_variant_t* variants;
     } enum_;
+    struct {
+        struct union_field_t* fields;
+    } union_;
 };
 
 struct ast_t {

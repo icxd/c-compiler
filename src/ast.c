@@ -237,6 +237,20 @@ void ast_print(struct ast_t* ast, u32 indent) {
             }
             break;
         }
+        case AST_UNION: {
+            printf("AST_UNION\n");
+            struct union_field_t* field = ast->data.union_.fields;
+            while (field != NULL) {
+                for (u32 i = 0; i < indent + 1; i++) {
+                    printf("    ");
+                }
+                printf("Field: "SV_ARG" : ", SV_FMT(field->name));
+                type_print(field->type);
+                printf("\n");
+                field = field->next;
+            }
+            break;
+        }
         default: {
             printf("Unknown AST type: %d\n", ast->type);
             break;
