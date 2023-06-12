@@ -166,6 +166,7 @@ struct token_t tokenizer_next(struct tokenizer_t* tokenizer) {
         string value = sv_substr(tokenizer->contents, start, tokenizer->index);
         if (sv_compare(value, SV("fn"))) token.type = TK_FN;
         else if (sv_compare(value, SV("struct"))) token.type = TK_STRUCT;
+        else if (sv_compare(value, SV("enum"))) token.type = TK_ENUM;
         else if (sv_compare(value, SV("true"))) token.type = TK_TRUE;
         else if (sv_compare(value, SV("false"))) token.type = TK_FALSE;
         else if (sv_compare(value, SV("null"))) token.type = TK_NULL;

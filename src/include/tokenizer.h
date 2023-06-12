@@ -16,6 +16,7 @@ enum token_type_t {
 
     TK_FN,
     TK_STRUCT,
+    TK_ENUM,
     TK_TRUE, TK_FALSE, TK_NULL,
     TK_VOID,
     TK_CHAR,
