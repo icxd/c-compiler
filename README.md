@@ -3,7 +3,7 @@
 ## todo
 
 * [ ] parse generic type.
-* [ ] union
+* [x] union (might change the syntax)
 * [x] enums
 * [x] structs
 * [ ] typechecking
