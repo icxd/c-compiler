@@ -21,6 +21,14 @@ My_Enum :: enum(u8) {
     C,
 };
 
+Abc :: struct { };
+Def :: struct { };
+
+My_Union :: union {
+    abc : Abc,
+    def : Def,
+};
+
 default_arguments_sample :: fn(a := 1, b: i32 = 123) { };
 
 my_inline_fn :: fn() -> i32 #inline {
