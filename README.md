@@ -2,13 +2,19 @@
 
 ## todo
 
-* [ ] parse generic type.
+* [ ] parse generics for all structs, functions, etc.
+    * [ ] structs
+    * [ ] union
+    * [ ] enums
+    * [ ] functions
 * [x] tagged union (might add untagged unions later)
 * [x] enums
 * [x] structs
-* [ ] typechecking
-* [ ] type inference
-* [ ] llvm backend
+* [ ] semantic analysis
+    * [ ] type checking and type inference
+    * [ ] label checking
+    * [ ] control flow checking
+* [ ] llvm backend or x64 assembly backend (haven't decided yet...)
 
 ## known bugs
 
