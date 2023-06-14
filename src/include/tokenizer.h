@@ -18,6 +18,8 @@ enum token_type_t {
     TK_STRUCT,
     TK_ENUM,
     TK_UNION,
+    TK_USING,
+    TK_IMPORT,
     TK_TRUE, TK_FALSE, TK_NULL,
     TK_VOID,
     TK_CHAR,

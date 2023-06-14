@@ -168,6 +168,8 @@ struct token_t tokenizer_next(struct tokenizer_t* tokenizer) {
         else if (sv_compare(value, SV("struct"))) token.type = TK_STRUCT;
         else if (sv_compare(value, SV("enum"))) token.type = TK_ENUM;
         else if (sv_compare(value, SV("union"))) token.type = TK_UNION;
+        else if (sv_compare(value, SV("using"))) token.type = TK_USING;
+        else if (sv_compare(value, SV("import"))) token.type = TK_IMPORT;
         else if (sv_compare(value, SV("true"))) token.type = TK_TRUE;
         else if (sv_compare(value, SV("false"))) token.type = TK_FALSE;
         else if (sv_compare(value, SV("null"))) token.type = TK_NULL;
