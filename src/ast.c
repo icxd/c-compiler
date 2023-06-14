@@ -74,6 +74,11 @@ void ast_print(struct ast_t* ast, u32 indent) {
             break;
         }
 
+        case AST_USING: {
+            printf("AST_USING\n");
+            ast_print(ast->data.using_.node, indent + 1);
+            break;
+        }
         case AST_CONSTANT_DECLARATION: {
             printf("AST_CONSTANT_DECLARATION: \""SV_ARG"\"", SV_FMT(ast->data.const_decl.name));
             if (ast->data.const_decl.type != NULL) {
@@ -249,6 +254,10 @@ void ast_print(struct ast_t* ast, u32 indent) {
                 printf("\n");
                 field = field->next;
             }
+            break;
+        }
+        case AST_IMPORT: {
+            printf("AST_IMPORT: \""SV_ARG"\"\n", SV_FMT(ast->data.import.path));
             break;
         }
         default: {

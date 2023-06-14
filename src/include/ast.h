@@ -9,6 +9,7 @@ enum ast_type_t {
     AST_PROGRAM = 0,
 
     // Statements
+    AST_USING,
     AST_CONSTANT_DECLARATION,
     AST_TOP_LEVEL_ATTRIBUTE, // TODO: remove this.
     AST_EXPRESSION_STATEMENT,
@@ -26,6 +27,7 @@ enum ast_type_t {
     AST_STRUCT,
     AST_ENUM,
     AST_UNION,
+    AST_IMPORT,
 };
 
 enum integer_base_t {
@@ -103,6 +105,9 @@ struct union_field_t {
 
 union ast_data_t {
     struct {
+        struct ast_t* node;
+    } using_;
+    struct {
         string name;
         struct type_t* type;
         struct ast_t* value;
@@ -164,6 +169,9 @@ union ast_data_t {
     struct {
         struct union_field_t* fields;
     } union_;
+    struct {
+        string path;
+    } import;
 };
 
 struct ast_t {
