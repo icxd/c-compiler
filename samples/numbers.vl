@@ -1,3 +1,11 @@
+import "std/io";
+io :: import "std/io";
+using import "std/io"; // might add
+using io :: import "std/io";
+
+// int :: i32;          // int == i32
+// int :: explicit i32; // int != i32
+
 boolean : bool : true;
 no_value : f64;
 null_value : *char : null;
@@ -25,8 +33,8 @@ Abc :: struct { };
 Def :: struct { };
 
 My_Union :: union {
-    abc : Abc,
-    def : Def,
+    abc : Abc;
+    def : Def;
 };
 
 default_arguments_sample :: fn(a := 1, b: i32 = 123) { };
