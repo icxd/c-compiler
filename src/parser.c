@@ -116,8 +116,37 @@ struct ast_t* parser_parse_statement(struct parser_t* p) {
 
             p->token = tokenizer_next(p->tokenizer);
         }
+    } else if (p->token.type == TK_USING) {
+        statement->type = AST_USING;
+        p->token = tokenizer_next(p->tokenizer);
+
+        if (p->token.type == TK_IDENTIFIER) {
+            struct ast_t* node = parser_parse_statement(p);
+            if (node->type != AST_CONSTANT_DECLARATION) {
+                fprintf(stderr, "Error: Expected constant declaration at line %d, column %d\n", p->token.line, p->token.column);
+                return NULL;
+            }
+
+            statement->data.using_.node = node;
+        } else if (p->token.type == TK_IMPORT) {
+            struct ast_t* node = parser_parse_expression(p);
+            if (node->type != AST_IMPORT) {
+                fprintf(stderr, "Error: Expected import at line %d, column %d\n", p->token.line, p->token.column);
+                return NULL;
+            }
+
+            statement->data.using_.node = node;
+
+            if (p->token.type != TK_SEMICOLON) {
+                fprintf(stderr, "Error: Expected semicolon at line %d, column %d\n", p->token.line, p->token.column);
+                return NULL;
+            }
+            p->token = tokenizer_next(p->tokenizer);
+        } else {
+            fprintf(stderr, "Error: Expected identifier or import at line %d, column %d\n", p->token.line, p->token.column);
+            return NULL;
+        }
     } else {
-        // parse expression statement
         statement->type = AST_EXPRESSION_STATEMENT;
         statement->data.expression_statement.expression = parser_parse_expression(p);
 
@@ -437,9 +466,11 @@ struct ast_t* parser_parse_primary(struct parser_t* p) {
             field->next = fields;
             fields = field;
 
-            if (p->token.type == TK_COMMA) {
-                p->token = tokenizer_next(p->tokenizer);
+            if (p->token.type != TK_SEMICOLON) {
+                fprintf(stderr, "Error: Expected semicolon at line %d, column %d\n", p->token.line, p->token.column);
+                return NULL;
             }
+            p->token = tokenizer_next(p->tokenizer);
         }
         expression->data.union_.fields = fields;
 
@@ -447,6 +478,10 @@ struct ast_t* parser_parse_primary(struct parser_t* p) {
             fprintf(stderr, "Error: Expected close brace at line %d, column %d\n", p->token.line, p->token.column);
             return NULL;
         }
+        p->token = tokenizer_next(p->tokenizer);
+    } else if (token.type == TK_IMPORT) {
+        expression->type = AST_IMPORT;
+        expression->data.import.path = p->token.value;
         p->token = tokenizer_next(p->tokenizer);
     } else {
         fprintf(stderr, "Unexpected token: \""SV_ARG"\" (%d) at line %d, column %d\n", SV_FMT(token.value), token.type, token.line, token.column);
