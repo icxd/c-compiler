@@ -1,6 +1,6 @@
 import "std/io";
 io :: import "std/io";
-using import "std/io"; // might add
+using import "std/io";
 using io :: import "std/io";
 
 // int :: i32;          // int == i32
