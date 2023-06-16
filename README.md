@@ -18,4 +18,6 @@
 
 ## known bugs
 
+*bugs with checked boxed means that they are fixed*
+
 * [x] `ast_print` causes the entire program to segfault for some unknown reason, needs to be investigated.
