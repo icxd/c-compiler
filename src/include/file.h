@@ -11,6 +11,6 @@ struct file_t {
 
 struct file_t* file_new(string path);
 void file_free(struct file_t* file);
-string read_file_to_string(string path);
+string file_read_to_string(string path);
 
 #endif // FILE_H
