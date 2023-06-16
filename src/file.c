@@ -9,7 +9,7 @@
 struct file_t* file_new(string path) {
     struct file_t* file = malloc(sizeof(struct file_t));
     file->path = path;
-    file->contents = read_file_to_string(path);
+    file->contents = file_read_to_string(path);
     return file;
 }
 
@@ -17,7 +17,7 @@ void file_free(struct file_t* file) {
     free(file);
 }
 
-string read_file_to_string(string path) {
+string file_read_to_string(string path) {
     FILE* filepoint;
     errno_t err;
 
